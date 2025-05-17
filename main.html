@@ -542,16 +542,27 @@
       const cy = rect.top  + rect.height/2;
       const dx = ev.clientX - cx;
       const dy = ev.clientY - cy;
-      // compute clockwise angle from top (12 o'clock)
-      let angle = Math.atan2(dx, -dy) * (180/Math.PI);
-      if (angle < 0) angle += 360;
-      // snap to nearest hour
-      const hour = (Math.round(angle/360*24) + 24) % 24;
-      const nowd = new Date();
-      nowd.setHours(hour,0,0,0);
-      const pt = findClosest(nowd);
-      if (pt){
-        selectedTime = pt.time;
+      // compute click angle from top (12 o'clock)
+      let clickAngle = Math.atan2(dx, -dy) * (180/Math.PI);
+      if (clickAngle < 0) clickAngle += 360;
+      // find nearest point by angle
+      let closestPt = null;
+      let minDiff = 360;
+      pts.forEach(pt=>{
+        const dt = new Date(pt.time);
+        let hr = dt.getHours() % 12;
+        const mn = dt.getMinutes() / 60;
+        let ptAngle = (hr + mn) * 30;
+        if (ptAngle < 0) ptAngle += 360;
+        const diff = Math.abs(ptAngle - clickAngle);
+        const adjDiff = Math.min(diff, 360 - diff);
+        if (adjDiff < minDiff){
+          minDiff = adjDiff;
+          closestPt = pt;
+        }
+      });
+      if (closestPt){
+        selectedTime = closestPt.time;
         buildCircle();
       }
     };
