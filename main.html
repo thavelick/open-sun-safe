@@ -414,19 +414,6 @@
   }
 
   function renderHome() {
-    // if no settings:
-    if (!isSettingsReady()) {
-      homeContentEl.style.display = "none";
-      hideLoading();
-      showMessage(`
-        <div class="card">
-          <div class="card-content" style="text-align:center;padding:24px">
-            <p>Please complete settings to view data.</p>
-            <button onclick="switchTab('settings')">Go to Settings</button>
-          </div>
-        </div>`);
-      return;
-    }
     // if no UV data:
     if (!uvData) {
       homeContentEl.style.display = "none";
@@ -621,11 +608,7 @@
     refreshBtn.onclick = ()=>fetchUv(true);
 
     // initial load
-    if (isSettingsReady()){
-      fetchUv(false);
-    } else {
-      renderHome();
-    }
+    fetchUv(false);
   }
 
   // bootstrap
