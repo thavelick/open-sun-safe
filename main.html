@@ -587,6 +587,17 @@
   function init(){
     // load settings
     loadSettings();
+    if (!settings.latitude && navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(pos => {
+        settings.latitude = pos.coords.latitude.toFixed(4);
+        settings.longitude = pos.coords.longitude.toFixed(4);
+        saveSettings();
+        inpLat.value = settings.latitude;
+        inpLng.value = settings.longitude;
+      }, err => {
+        console.warn("Geolocation error:", err);
+      });
+    }
     inpLat.value = settings.latitude;
     inpLng.value = settings.longitude;
     inpSkin.value = settings.skinType;
