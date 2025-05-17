@@ -9,6 +9,11 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { AlertCircle, RefreshCw, Sun } from "lucide-react"
 
+// Constants for localStorage keys
+const SETTINGS_STORAGE_KEY = "sunSafetySettings"
+const UV_DATA_STORAGE_KEY = "sunSafetyUvData"
+const DATA_EXPIRY_TIME = 24 * 60 * 60 * 1000 // 24 hours in milliseconds
+
 export default function SunSafetyApp() {
   const [settings, setSettings] = useState({
     latitude: "",
@@ -19,14 +24,54 @@ export default function SunSafetyApp() {
   const [uvData, setUvData] = useState(null)
   const [loading, setLoading] = useState(false)
   const [activeTab, setActiveTab] = useState("home")
+  const [lastUpdated, setLastUpdated] = useState(null)
 
-  // Load settings from localStorage on initial render
+  // Load settings and UV data from localStorage on initial render
   useEffect(() => {
-    const savedSettings = localStorage.getItem("sunSafetySettings")
+    // Load settings
+    const savedSettings = localStorage.getItem(SETTINGS_STORAGE_KEY)
     if (savedSettings) {
       setSettings(JSON.parse(savedSettings))
     }
+
+    // Load UV data
+    loadUvDataFromStorage()
   }, [])
+
+  // Load UV data from localStorage
+  const loadUvDataFromStorage = () => {
+    const savedUvData = localStorage.getItem(UV_DATA_STORAGE_KEY)
+
+    if (savedUvData) {
+      try {
+        const { data, timestamp } = JSON.parse(savedUvData)
+        const now = new Date().getTime()
+
+        // Check if data is less than 24 hours old
+        if (now - timestamp < DATA_EXPIRY_TIME) {
+          setUvData(data)
+          setLastUpdated(new Date(timestamp))
+          return true
+        }
+      } catch (error) {
+        console.error("Error parsing stored UV data:", error)
+      }
+    }
+
+    return false
+  }
+
+  // Save UV data to localStorage
+  const saveUvDataToStorage = (data) => {
+    const timestamp = new Date().getTime()
+    const dataToStore = {
+      data,
+      timestamp,
+    }
+
+    localStorage.setItem(UV_DATA_STORAGE_KEY, JSON.stringify(dataToStore))
+    setLastUpdated(new Date(timestamp))
+  }
 
   // Check if settings are complete
   const isSettingsComplete = () => {
@@ -35,15 +80,20 @@ export default function SunSafetyApp() {
 
   // Save settings to localStorage
   const saveSettings = (newSettings) => {
-    localStorage.setItem("sunSafetySettings", JSON.stringify(newSettings))
+    localStorage.setItem(SETTINGS_STORAGE_KEY, JSON.stringify(newSettings))
     setSettings(newSettings)
   }
 
   // Fetch UV data from API
-  const fetchUvData = async () => {
+  const fetchUvData = async (forceRefresh = false) => {
     if (!isSettingsComplete()) {
       alert("Please complete your settings first.")
       setActiveTab("settings")
+      return
+    }
+
+    // If not forcing refresh, try to load from storage first
+    if (!forceRefresh && loadUvDataFromStorage()) {
       return
     }
 
@@ -58,6 +108,9 @@ export default function SunSafetyApp() {
 
       const data = await response.json()
       setUvData(data)
+
+      // Save to localStorage
+      saveUvDataToStorage(data)
     } catch (error) {
       console.error("Error fetching UV data:", error)
       alert("Failed to fetch UV data. Please try again later.")
@@ -81,36 +134,48 @@ export default function SunSafetyApp() {
     }
   }
 
-  // Calculate safe time in the sun based on UV index and skin type
+  // MED (Minimal Erythema Dose) values for each skin type in J/m²
+  const MED_VALUES = {
+    "1": 200, // Type I
+    "2": 250, // Type II
+    "3": 300, // Type III
+    "4": 450, // Type IV
+    "5": 600, // Type V
+    "6": 1000, // Type VI
+  }
+
+  // Calculate safe time in the sun based on UV index and skin type using MED values
   const calculateSafeTime = (uvIndex, skinType) => {
-    if (uvIndex <= 0) return 0
-
-    // Base safe exposure time in minutes for skin type 1 at UV index 1
-    const baseSafeTime = 67 // ~67 minutes
-
-    // Skin type multiplier (approximate)
-    const skinTypeMultiplier = {
-      "1": 1,
-      "2": 1.5,
-      "3": 2,
-      "4": 2.5,
-      "5": 3,
-      "6": 4,
+    // Handle invalid inputs gracefully
+    if (typeof uvIndex !== "number" || uvIndex <= 0 || !skinType || !MED_VALUES[skinType]) {
+      return 0
     }
 
-    // Calculate safe time
-    // Safe time decreases as UV index increases (inverse relationship)
-    const safeTime = Math.round((baseSafeTime * skinTypeMultiplier[skinType]) / uvIndex)
-
-    return safeTime
+    const MED = MED_VALUES[skinType] // J/m² (minimal erythema dose)
+    const doseRate = uvIndex * 0.025 // J/m² per minute; 1 UVI ≈ 25 mW/m² = 0.025 J/m²/min
+    const safeTime = MED / doseRate // minutes
+    return Math.floor(safeTime / 60)
   }
 
   // Handle settings form submission
   const handleSettingsSubmit = (e) => {
     e.preventDefault()
+
+    // Check if latitude or longitude changed
+    const latChanged = settings.latitude !== e.target.latitude.value
+    const longChanged = settings.longitude !== e.target.longitude.value
+
+    // Save the new settings
     saveSettings(settings)
+
+    // If location changed, force a refresh of UV data
+    if (latChanged || longChanged) {
+      fetchUvData(true)
+    } else {
+      fetchUvData(false)
+    }
+
     setActiveTab("home")
-    fetchUvData()
   }
 
   // Handle settings change
@@ -124,7 +189,7 @@ export default function SunSafetyApp() {
   // Fetch data on initial load if settings are complete
   useEffect(() => {
     if (isSettingsComplete()) {
-      fetchUvData()
+      fetchUvData(false)
     }
   }, [])
 
@@ -147,12 +212,28 @@ export default function SunSafetyApp() {
     return time.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })
   }
 
+  // Format date for display
+  const formatDate = (date) => {
+    if (!date) return ""
+    return date.toLocaleString([], {
+      month: "short",
+      day: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+    })
+  }
+
   // Get all UV data points combined
   const getAllUvDataPoints = () => {
     if (!uvData) return []
     return [...(uvData.history || []), uvData.now, ...(uvData.forecast || [])].sort(
       (a, b) => new Date(a.time) - new Date(b.time),
     )
+  }
+
+  // Handle refresh button click
+  const handleRefresh = () => {
+    fetchUvData(true) // Force refresh
   }
 
   return (
@@ -193,7 +274,7 @@ export default function SunSafetyApp() {
                   <AlertCircle className="h-12 w-12 text-orange-500" />
                   <h2 className="text-xl font-semibold">No Data Available</h2>
                   <p>Click the button below to fetch UV data.</p>
-                  <Button onClick={fetchUvData}>Fetch UV Data</Button>
+                  <Button onClick={() => fetchUvData(true)}>Fetch UV Data</Button>
                 </div>
               </CardContent>
             </Card>
@@ -221,10 +302,13 @@ export default function SunSafetyApp() {
               </Card>
 
               <div className="flex justify-between items-center">
-                <p className="text-sm text-gray-500">
-                  Location: {settings.latitude}, {settings.longitude}
-                </p>
-                <Button onClick={fetchUvData} size="sm" className="gap-2">
+                <div className="text-sm text-gray-500">
+                  <p>
+                    Location: {settings.latitude}, {settings.longitude}
+                  </p>
+                  {lastUpdated && <p className="mt-1">Last updated: {formatDate(lastUpdated)}</p>}
+                </div>
+                <Button onClick={handleRefresh} size="sm" className="gap-2">
                   <RefreshCw className="h-4 w-4" /> Refresh
                 </Button>
               </div>
@@ -496,3 +580,4 @@ function UvCircleWidget({ uvData, initialTime }) {
     </div>
   )
 }
+
