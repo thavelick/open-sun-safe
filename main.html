@@ -499,21 +499,6 @@
     </defs>`;
     svg += `<circle cx="50" cy="50" r="45" fill="none" stroke="url(#grad)" stroke-width="8"/>`;
 
-    // data points
-    pts.forEach((pt,i)=>{
-      const dt = new Date(pt.time);
-      let hr = dt.getHours() % 12;
-      const mn = dt.getMinutes() / 60;
-      const ang = ((hr + mn)*30)*Math.PI/180;
-      const x = 50 + Math.sin(ang)*45;
-      const y = 50 - Math.cos(ang)*45;
-      const isSel = pt.time===selPt.time;
-      if (!isSel && pt.uvi < 1) return;
-      const rc = isSel?3:2;
-      const fc = isSel? "#fff" : getRisk(pt.uvi).color;
-      svg += `<circle cx="${x}" cy="${y}" r="${rc}" fill="${fc}" stroke="${isSel?'#fff':'none'}" stroke-width="1"/>`;
-    });
-
     svg += `</svg>`;
 
     // center info
