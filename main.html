@@ -489,17 +489,17 @@
     // build SVG+gradient+dots
     let svg = `<svg viewBox="0 0 100 100" preserveAspectRatio="xMidYMid meet">`;
     // draw hour segments based on risk
-    getAllPoints().forEach((pt, i, arr) => {
-      const riskColor = getRisk(pt.uvi).color;
-      const startAngle = (i * 360/arr.length - 90) * Math.PI/180;
-      const endAngle = ((i + 1) * 360/arr.length - 90) * Math.PI/180;
+    for (let hr = 1; hr <= 12; hr++) {
+      const pt = pts.find(p => (new Date(p.time).getHours() % 12 || 12) === hr);
+      const riskColor = getRisk(pt ? pt.uvi : 0).color;
+      const startAngle = (hr * 30 - 90) * Math.PI/180;
+      const endAngle = ((hr % 12 + 1) * 30 - 90) * Math.PI/180;
       const x1 = 50 + Math.cos(startAngle) * 45;
       const y1 = 50 + Math.sin(startAngle) * 45;
       const x2 = 50 + Math.cos(endAngle) * 45;
       const y2 = 50 + Math.sin(endAngle) * 45;
-      const largeArc = (Math.abs(endAngle - startAngle) > Math.PI) ? 1 : 0;
-      svg += `<path d="M${x1.toFixed(2)} ${y1.toFixed(2)} A45 45 0 ${largeArc} 1 ${x2.toFixed(2)} ${y2.toFixed(2)}" stroke="${riskColor}" stroke-width="8" fill="none"/>`;
-    });
+      svg += `<path d="M${x1.toFixed(2)} ${y1.toFixed(2)} A45 45 0 0 1 ${x2.toFixed(2)} ${y2.toFixed(2)}" stroke="${riskColor}" stroke-width="8" fill="none"/>`;
+    }
     // draw dot at selected hour
     const selectedHour = new Date(selPt.time).getHours() % 12 || 12;
     const angle = (selectedHour * 30 - 90) * Math.PI / 180;
