@@ -449,7 +449,7 @@
 
     // safe time
     const uvi = uvData.now.uvi;
-    safeTimeEl.textContent = calcSafeTime(uvi, settings.skinType) + " min";
+    safeTimeEl.textContent = Math.round(calcSafeTime(uvi, settings.skinType)) + " min";
     const skinMap = {
       "1":"Type I (Very fair)",
       "2":"Type II (Fair)",
