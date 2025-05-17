@@ -374,11 +374,12 @@
     return best;
   }
   function getRisk(u) {
-    if (u <3) return { label:"Low UV", color:"#2ed573" };
-    if (u <6) return { label:"Moderate UV", color:"#ffa502" };
-    if (u <8) return { label:"High UV", color:"#ff7f50" };
-    if (u <11) return{ label:"Very High UV", color:"#ff4757" };
-    return { label:"Extreme UV", color:"#9c27b0" };
+    if (u < 1) return { label: "No UV", color: "#1E90FF" };      // Dodger Blue (bluish)
+    if (u < 2) return { label: "Low UV", color: "#2ed573" };     // Medium Spring Green (greenish)
+    if (u < 6) return { label: "Moderate UV", color: "#ffa502" }; // Orange
+    if (u < 8) return { label: "High UV", color: "#ff7f50" };     // Coral
+    if (u < 11) return { label: "Very High UV", color: "#ff4757" }; // Red-Orange
+    return { label: "Extreme UV", color: "#9c27b0" };              // Purple
   }
   function calcSafeTime(u, skin) {
     if (!u|| u<=0|| !skin|| !MED_VALUES[skin]) return 0;
@@ -497,16 +498,6 @@
       </linearGradient>
     </defs>`;
     svg += `<circle cx="50" cy="50" r="45" fill="none" stroke="url(#grad)" stroke-width="8"/>`;
-
-    // hour marks 12 numbers
-    for(let i=0;i<12;i++){
-      const ang = (i*30)*Math.PI/180;
-      const x = 50 + Math.sin(ang)*38;
-      const y = 50 - Math.cos(ang)*38;
-      const label = i===0?12:i;
-      svg += `<text x="${x}" y="${y}" text-anchor="middle" dominant-baseline="middle"
-                  fill="rgba(255,255,255,0.8)" font-size="4" font-weight="600">${label}</text>`;
-    }
 
     // data points
     pts.forEach((pt,i)=>{
