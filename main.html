@@ -498,15 +498,12 @@
       </linearGradient>
     </defs>`;
     svg += `<circle cx="50" cy="50" r="45" fill="none" stroke="url(#grad)" stroke-width="8"/>`;
-    for (let hr = 1; hr <= 12; hr++) {
-      const angle = (hr * 30 - 90) * Math.PI / 180;
-      const x = 50 + Math.cos(angle) * 42;
-      const y = 50 + Math.sin(angle) * 42;
-      const hour = new Date(selPt.time).getHours() % 12 || 12;
-      const isSelectedHour = hour === hr;
-      const color = isSelectedHour ? 'var(--primary-color)' : 'var(--dark-color)';
-      svg += `<text x="${x.toFixed(2)}" y="${y.toFixed(2)}" fill="${color}" text-anchor="middle" dominant-baseline="middle" font-size="4">${hr}</text>`;
-    }
+    // draw dot at selected hour
+    const selectedHour = new Date(selPt.time).getHours() % 12 || 12;
+    const angle = (selectedHour * 30 - 90) * Math.PI / 180;
+    const x = 50 + Math.cos(angle) * 42;
+    const y = 50 + Math.sin(angle) * 42;
+    svg += `<circle cx="${x.toFixed(2)}" cy="${y.toFixed(2)}" r="2" fill="var(--primary-color)"/>`;
 
     svg += `</svg>`;
 
