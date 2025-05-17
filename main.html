@@ -508,6 +508,7 @@
       const x = 50 + Math.sin(ang)*45;
       const y = 50 - Math.cos(ang)*45;
       const isSel = pt.time===selPt.time;
+      if (!isSel && pt.uvi < 1) return;
       const rc = isSel?3:2;
       const fc = isSel? "#fff" : getRisk(pt.uvi).color;
       svg += `<circle cx="${x}" cy="${y}" r="${rc}" fill="${fc}" stroke="${isSel?'#fff':'none'}" stroke-width="1"/>`;
