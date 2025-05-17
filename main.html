@@ -542,10 +542,11 @@
       const cy = rect.top  + rect.height/2;
       const dx = ev.clientX - cx;
       const dy = ev.clientY - cy;
-      let angle = Math.atan2(dy,dx)*(180/Math.PI);
-      angle = (angle+90)%360;
-      if (angle<0) angle +=360;
-      const hour = Math.floor(angle/360*24);
+      // compute clockwise angle from top (12 o'clock)
+      let angle = Math.atan2(dx, -dy) * (180/Math.PI);
+      if (angle < 0) angle += 360;
+      // snap to nearest hour
+      const hour = (Math.round(angle/360*24) + 24) % 24;
       const nowd = new Date();
       nowd.setHours(hour,0,0,0);
       const pt = findClosest(nowd);
