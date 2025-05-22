@@ -1,105 +1,3 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sun Safety Tracker</title>
-  <link rel="stylesheet" href="css/main.css" />
-</head>
-<body>
-
-<div class="container">
-  <header>
-    <h1>☀️ OpenSunSafe</h1>
-  </header>
-
-  <!-- TABS -->
-  <div class="tabs">
-    <button id="tab-home" class="tab-button active">Home</button>
-    <button id="tab-settings" class="tab-button">Settings</button>
-  </div>
-
-  <!-- HOME VIEW -->
-  <div id="view-home" class="view active">
-    <div id="loading" class="loading-container" style="display:none">
-      <div class="loading-spinner"></div>
-      <div>Loading UV data…</div>
-    </div>
-
-    <!-- message when no settings or no data -->
-    <div id="message" style="width:100%;"></div>
-
-    <!-- main home content -->
-    <div id="home-content" style="display:none">
-      <div id="circle-widget"></div>
-
-      <div id="safe-time-card" class="card">
-        <div class="card-header"><h2>Safe Sun Exposure</h2></div>
-        <div class="card-content">
-          <div id="safe-time">0 min</div>
-          <div style="color:#666; font-size:.9rem;">estimated safe time without sunscreen</div>
-          <div style="margin-top:6px; font-size:.9rem;">
-            Based on skin type: <span id="skin-display" style="font-weight:600;"></span>
-          </div>
-        </div>
-      </div>
-
-      <div id="location-refresh">
-        <div id="location-info"></div>
-        <button id="refresh-btn" class="secondary">Refresh</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- SETTINGS VIEW -->
-  <div id="view-settings" class="view">
-    <div class="card">
-      <div class="card-header"><h2>Settings</h2></div>
-      <div class="card-content">
-        <form id="settings-form">
-          <div class="form-group">
-            <label for="inp-lat">Latitude</label>
-            <input id="inp-lat" type="number" step="0.0001" required />
-          </div>
-          <div class="form-group">
-            <label for="inp-lng">Longitude</label>
-            <input id="inp-lng" type="number" step="0.0001" required />
-          </div>
-          <div class="form-group">
-            <label for="inp-skin">Fitzpatrick Skin Type</label>
-            <select id="inp-skin" required>
-              <option value="">Select…</option>
-              <option value="1">Type I – Very fair, always burns</option>
-              <option value="2">Type II – Fair, burns easily</option>
-              <option value="3">Type III – Medium, burns moderately</option>
-              <option value="4">Type IV – Olive, burns minimally</option>
-              <option value="5">Type V – Brown, rarely burns</option>
-              <option value="6">Type VI – Dark brown/black, never burns</option>
-            </select>
-          </div>
-          <button type="submit" class="save-button">Save Settings</button>
-        </form>
-      </div>
-    </div>
-
-    <div id="about" class="card">
-      <div class="card-header"><h2>About the Fitzpatrick Scale</h2></div>
-      <div class="card-content">
-        <p>The Fitzpatrick scale classifies skin types based on how they respond to sun exposure:</p>
-        <ul>
-          <li><strong>Type I:</strong> Very fair skin, always burns, never tans</li>
-          <li><strong>Type II:</strong> Fair skin, burns easily, tans minimally</li>
-          <li><strong>Type III:</strong> Medium skin, burns moderately, tans gradually</li>
-          <li><strong>Type IV:</strong> Olive skin, burns minimally, tans well</li>
-          <li><strong>Type V:</strong> Brown skin, rarely burns, tans darkly</li>
-          <li><strong>Type VI:</strong> Dark brown/black skin, never burns</li>
-        </ul>
-      </div>
-    </div>
-  </div>
-</div><!-- /container -->
-
-<script>
 ;(function(){
   // ===== CONSTANTS =====
   const SETTINGS_KEY = "sunSafetySettings";
@@ -202,17 +100,17 @@
     return best;
   }
   function getRisk(u) {
-    if (u < 1) return { label: "No UV", color: "#1E90FF" };      // Dodger Blue (bluish)
-    if (u < 3) return { label: "Low UV", color: "#2ed573" };     // Medium Spring Green (greenish)
-    if (u < 6) return { label: "Moderate UV", color: "#ffa502" }; // Orange
-    if (u < 8) return { label: "High UV", color: "#ff7f50" };     // Coral
-    if (u < 11) return { label: "Very High UV", color: "#ff4757" }; // Red-Orange
-    return { label: "Extreme UV", color: "#9c27b0" };              // Purple
+    if (u < 1) return { label: "No UV", color: "#1E90FF" };
+    if (u < 3) return { label: "Low UV", color: "#2ed573" };
+    if (u < 6) return { label: "Moderate UV", color: "#ffa502" };
+    if (u < 8) return { label: "High UV", color: "#ff7f50" };
+    if (u < 11) return { label: "Very High UV", color: "#ff4757" };
+    return { label: "Extreme UV", color: "#9c27b0" };
   }
   function calcSafeTime(u, skin) {
     if (!u|| u<=0|| !skin|| !MED_VALUES[skin]) return 0;
     const MED = MED_VALUES[skin];
-    const rate = u * 0.025; // J/m2 per min
+    const rate = u * 0.025;
     const mins = MED / rate;
     return Math.floor(mins) / 60
   }
@@ -242,7 +140,6 @@
   }
 
   function renderHome() {
-    // if no UV data:
     if (!uvData) {
       homeContentEl.style.display = "none";
       hideLoading();
@@ -256,13 +153,10 @@
       document.getElementById("btn-fetch").onclick = ()=>fetchUv(true);
       return;
     }
-
-    // render:
     hideMessage();
     hideLoading();
     homeContentEl.style.display = "flex";
 
-    // safe time
     const uvi = uvData.now.uvi;
     safeTimeEl.textContent = Math.round(calcSafeTime(uvi, settings.skinType)) + " min";
     const skinMap = {
@@ -275,12 +169,10 @@
     };
     skinDisplayEl.textContent = skinMap[settings.skinType]||"";
 
-    // location + last updated
     let txt = `Location: ${settings.latitude}, ${settings.longitude}`;
     if (lastTs) txt += `<br>Last: ${formatDate(lastTs)}`;
     locInfoEl.innerHTML = txt;
 
-    // circle
     buildCircle();
   }
 
@@ -293,7 +185,6 @@
     loadingEl.style.display = "none";
   }
 
-  // ===== CIRCLE WIDGET =====
   function buildCircle() {
     const pts = getAllPoints();
     if (!pts.length) return;
@@ -301,9 +192,7 @@
     selectedTime = selectedTime||nowT;
     const selPt = findClosest(selectedTime);
 
-    // build SVG+gradient+dots
     let svg = `<svg viewBox="0 0 100 100" preserveAspectRatio="xMidYMid meet">`;
-    // draw hour segments based on risk
     for (let hr = 1; hr <= 12; hr++) {
       const pt = pts.find(p => (new Date(p.time).getHours() % 12 || 12) === hr);
       const riskColor = getRisk(pt ? pt.uvi : 0).color;
@@ -315,7 +204,6 @@
       const y2 = 50 + Math.sin(endAngle) * 45;
       svg += `<path d="M${x1.toFixed(2)} ${y1.toFixed(2)} A45 45 0 0 1 ${x2.toFixed(2)} ${y2.toFixed(2)}" stroke="${riskColor}" stroke-width="8" fill="none"/>`;
     }
-    // draw dot at selected hour
     const selectedHour = new Date(selPt.time).getHours() % 12 || 12;
     const angle = (selectedHour * 30 - 90) * Math.PI / 180;
     const x = 50 + Math.cos(angle) * 42;
@@ -324,7 +212,6 @@
 
     svg += `</svg>`;
 
-    // center info
     const risk = getRisk(selPt.uvi);
     const center = `
       <div class="center-info">
@@ -332,20 +219,15 @@
         <div class="uvi">${selPt.uvi.toFixed(1)}</div>
         <div class="label">${risk.label}</div>
       </div>`;
-
     circleEl.innerHTML = svg + center;
-
-    // attach click:
     circleEl.onclick = (ev)=>{
       const rect = circleEl.getBoundingClientRect();
       const cx = rect.left + rect.width/2;
       const cy = rect.top  + rect.height/2;
       const dx = ev.clientX - cx;
       const dy = ev.clientY - cy;
-      // compute click angle from top (12 o'clock)
       let clickAngle = Math.atan2(dx, -dy) * (180/Math.PI);
       if (clickAngle < 0) clickAngle += 360;
-      // find nearest point by angle
       let closestPt = null;
       let minDiff = 360;
       pts.forEach(pt=>{
@@ -368,14 +250,12 @@
     };
   }
 
-  // ===== FETCH & LIFECYCLE =====
   async function fetchUv(force=false){
     if (!isSettingsReady()){
       switchTab("settings"); return;
     }
     showLoading();
     if (!force && loadUvStorage()){
-      // loaded from cache
       renderHome();
       return;
     }
@@ -398,9 +278,7 @@
     }
   }
 
-  // ===== SETUP =====
   function init(){
-    // load settings
     loadSettings();
     if (!settings.latitude && navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(pos => {
@@ -417,11 +295,9 @@
     inpLng.value = settings.longitude;
     inpSkin.value = settings.skinType;
 
-    // tab events
     tabHome.onclick     = ()=>switchTab("home");
     tabSettings.onclick = ()=>switchTab("settings");
 
-    // form
     form.onsubmit = e=>{
       e.preventDefault();
       settings.latitude  = inpLat.value.trim();
@@ -432,18 +308,12 @@
       switchTab("home");
     };
 
-    // refresh
     refreshBtn.onclick = ()=>fetchUv(true);
 
-    // initial load
     fetchUv(false);
   }
 
-  // bootstrap
   window.switchTab = switchTab;
   window.fetchUv   = fetchUv;
   document.addEventListener("DOMContentLoaded", init);
 })();
-</script>
-</body>
-</html>
