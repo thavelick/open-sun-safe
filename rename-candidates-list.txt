@@ -38,5 +38,13 @@ hideLoading -> hideLoadingIndicator
 buildCircle -> renderUVCircleWidget
 fetchUv -> fetchUVData
 init -> initializeApp
+str -> timeString
+d -> dateObject
+h -> hour12
+u -> uvIndex
+resp -> response
+pts -> dataPoints
+s -> storedSettings
+md -> minDiff
 nowT -> currentTimestamp
 selPt -> selectedDataPoint
