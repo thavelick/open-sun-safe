@@ -304,24 +304,24 @@
         userSettings.latitude = pos.coords.latitude.toFixed(4);
         userSettings.longitude = pos.coords.longitude.toFixed(4);
         saveSettings();
-        inpLat.value = userSettings.latitude;
-        inpLng.value = userSettings.longitude;
+        inputLatitudeElement.value = userSettings.latitude;
+        inputLongitudeElement.value = userSettings.longitude;
       }, err => {
         console.warn("Geolocation error:", err);
       });
     }
-    inpLat.value = userSettings.latitude;
-    inpLng.value = userSettings.longitude;
-    inpSkin.value = userSettings.skinType;
+    inputLatitudeElement.value = userSettings.latitude;
+    inputLongitudeElement.value = userSettings.longitude;
+    inputSkinTypeElement.value = userSettings.skinType;
 
     tabHomeButton.onclick     = ()=>switchTab("home");
     tabSettingsButton.onclick = ()=>switchTab("settings");
 
-    form.onsubmit = e=>{
+    settingsForm.onsubmit = e=>{
       e.preventDefault();
-      userSettings.latitude  = inpLat.value.trim();
-      userSettings.longitude = inpLng.value.trim();
-      userSettings.skinType  = inpSkin.value;
+      userSettings.latitude  = inputLatitudeElement.value.trim();
+      userSettings.longitude = inputLongitudeElement.value.trim();
+      userSettings.skinType  = inputSkinTypeElement.value;
       saveSettings();
       fetchUv(true);
       switchTab("home");
