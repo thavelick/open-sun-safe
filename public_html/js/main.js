@@ -90,7 +90,7 @@
     ].sort((a,b)=> new Date(a.time) - new Date(b.time));
   }
   function findClosestDataPointByTime(tp) {
-    const pts = getAllPoints();
+    const pts = getAllUVDataPoints();
     const tgt = new Date(tp).getTime();
     let best = pts[0], md = Math.abs(new Date(pts[0].time).getTime()-tgt);
     for(let i=1;i<pts.length;i++){
