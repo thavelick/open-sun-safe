@@ -50,15 +50,15 @@
   }
   function saveUvStorage(data) {
     const payload = { data, ts:Date.now() };
-    localStorage.setItem(UVDATA_KEY, JSON.stringify(payload));
+    localStorage.setItem(UV_DATA_STORAGE_KEY, JSON.stringify(payload));
     lastTs = new Date(payload.ts);
   }
   function loadUvStorage() {
-    const s = localStorage.getItem(UVDATA_KEY);
+    const s = localStorage.getItem(UV_DATA_STORAGE_KEY);
     if (!s) return false;
     try {
       const { data, ts } = JSON.parse(s);
-      if (Date.now() - ts < EXPIRY) {
+      if (Date.now() - ts < UV_DATA_EXPIRY_MS) {
         uvData = data;
         lastTs = new Date(ts);
         return true;
