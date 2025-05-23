@@ -241,7 +241,7 @@
       visSvg.innerHTML += `<circle class="debug-click" cx="${mX.toFixed(2)}" cy="${mY.toFixed(2)}" r="2" fill="red"/>`;
 
       // determine clicked segment (each 30° slice from top)
-      const seg = Math.floor((clickAngle + 15) / 30) % 12;
+      const seg = Math.floor((clickAngle) / 30) % 12;
       const hr = seg === 0 ? 12 : seg;
       // find a data point matching that hour
       const ptMatch = pts.find(pt => (new Date(pt.time).getHours() % 12 || 12) === hr);
