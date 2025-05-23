@@ -193,6 +193,7 @@
     const selPt = findClosest(selectedTime);
 
     let svg = `<svg viewBox="0 0 100 100" preserveAspectRatio="xMidYMid meet">`;
+    const selectedHour = new Date(selPt.time).getHours() % 12 || 12;
     for (let hr = 1; hr <= 12; hr++) {
       const pt = pts.find(p => (new Date(p.time).getHours() % 12 || 12) === hr);
       const riskColor = getRisk(pt ? pt.uvi : 0).color;
@@ -202,13 +203,9 @@
       const y1 = 50 + Math.sin(startAngle) * 45;
       const x2 = 50 + Math.cos(endAngle) * 45;
       const y2 = 50 + Math.sin(endAngle) * 45;
-      svg += `<path d="M${x1.toFixed(2)} ${y1.toFixed(2)} A45 45 0 0 1 ${x2.toFixed(2)} ${y2.toFixed(2)}" stroke="${riskColor}" stroke-width="8" fill="none"/>`;
+      svg += `<path d="M${x1.toFixed(2)} ${y1.toFixed(2)} A45 45 0 0 1 ${x2.toFixed(2)} ${y2.toFixed(2)}" stroke="${riskColor}" stroke-width="${hr === selectedHour ? 12 : 8}" fill="none"/>`;
     }
     const selectedHour = new Date(selPt.time).getHours() % 12 || 12;
-    const angle = (selectedHour * 30 - 90) * Math.PI / 180;
-    const x = 50 + Math.cos(angle) * 42;
-    const y = 50 + Math.sin(angle) * 42;
-    svg += `<circle cx="${x.toFixed(2)}" cy="${y.toFixed(2)}" r="2" fill="var(--primary-color)"/>`;
 
     svg += `</svg>`;
 
