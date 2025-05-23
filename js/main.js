@@ -2,7 +2,7 @@
   // ===== CONSTANTS =====
   const SETTINGS_KEY = "sunSafetySettings";
   const UVDATA_KEY   = "sunSafetyUvData";
-  const EXPIRY       = 24*60*60*1000; // ms
+  const EXPIRY       = 30*60*1000; // ms (30 minutes)
   const MED_VALUES = {
     "1":200, "2":250, "3":300,
     "4":450, "5":600, "6":1000
