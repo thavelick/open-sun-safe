@@ -130,20 +130,20 @@
     }
   }
 
-  function showMessage(html) {
+  function displayMessage(html) {
     messageElement.innerHTML = html;
     messageElement.style.display = "block";
   }
-  function hideMessage() {
+  function clearMessage() {
     messageElement.style.display = "none";
     messageElement.innerHTML = "";
   }
 
-  function renderHome() {
+  function renderHomeView() {
     if (!uvDataCache) {
       homeContentElement.style.display = "none";
       hideLoading();
-      showMessage(`
+      displayMessage(`
         <div class="card">
           <div class="card-content" style="text-align:center;padding:24px">
             <p>No UV data available.</p>
@@ -153,7 +153,7 @@
       document.getElementById("btn-fetch").onclick = ()=>fetchUv(true);
       return;
     }
-    hideMessage();
+    clearMessage();
     hideLoading();
     homeContentElement.style.display = "flex";
 
@@ -203,12 +203,12 @@
     buildCircle();
   }
 
-  function showLoading() {
+  function displayLoadingIndicator() {
     loadingElement.style.display = "flex";
     homeContentElement.style.display = "none";
     hideMessage();
   }
-  function hideLoading() {
+  function hideLoadingIndicator() {
     loadingElement.style.display = "none";
   }
 
@@ -273,9 +273,9 @@
     if (!isSettingsReady()){
       switchTabView("settings"); return;
     }
-    showLoading();
+    displayLoadingIndicator();
     if (!force && loadUvStorage()){
-      renderHome();
+      renderHomeView();
       return;
     }
     try {
@@ -285,11 +285,11 @@
       const data = await resp.json();
       uvDataCache = data;
       saveUvStorage(data);
-      renderHome();
+      renderHomeView();
     }
     catch(err){
-      hideLoading();
-      showMessage(`<div style="padding:24px; text-align:center">
+      hideLoadingIndicator();
+      displayMessage(`<div style="padding:24px; text-align:center">
         <p>Error loading UV data. Try again later.</p>
         <button onclick="fetchUv(true)">Retry</button>
       </div>`);

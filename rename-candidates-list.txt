@@ -30,11 +30,11 @@
 - [x] getRisk -> getUVRiskLevel
 - [x] calcSafeTime -> calculateSafeExposureTime
 - [x] switchTab -> switchTabView
-- [ ] showMessage -> displayMessage
-- [ ] hideMessage -> clearMessage
-- [ ] renderHome -> renderHomeView
-- [ ] showLoading -> displayLoadingIndicator
-- [ ] hideLoading -> hideLoadingIndicator
+- [x] showMessage -> displayMessage
+- [x] hideMessage -> clearMessage
+- [x] renderHome -> renderHomeView
+- [x] showLoading -> displayLoadingIndicator
+- [x] hideLoading -> hideLoadingIndicator
 - [ ] buildCircle -> renderUVCircleWidget
 - [ ] fetchUv -> fetchUVData
 - [ ] init -> initializeApp
