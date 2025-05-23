@@ -120,13 +120,13 @@
     if (tab==="home") {
       tabHomeButton.classList.add("active");
       tabSettingsButton.classList.remove("active");
-      viewHome.classList.add("active");
-      viewSettings.classList.remove("active");
+      homeViewElement.classList.add("active");
+      settingsViewElement.classList.remove("active");
     } else {
       tabHomeButton.classList.remove("active");
       tabSettingsButton.classList.add("active");
-      viewHome.classList.remove("active");
-      viewSettings.classList.add("active");
+      homeViewElement.classList.remove("active");
+      settingsViewElement.classList.add("active");
     }
   }
 
