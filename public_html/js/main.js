@@ -183,7 +183,7 @@
       safeTimeEl.textContent = label;
       safeTimeEl.style.color = "var(--info-color)";
     } else {
-      safeTimeEl.textContent = Math.round(calcSafeTime(uvi, settings.skinType)) + " min";
+      safeTimeEl.textContent = `Safe in the sun for ${Math.round(calcSafeTime(uvi, settings.skinType))} minutes`;
       safeTimeEl.style.color = "var(--primary-color)";
     }
     const skinMap = {
