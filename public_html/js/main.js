@@ -213,7 +213,7 @@
   }
 
   function buildCircle() {
-    const pts = getAllPoints();
+    const pts = getAllUVDataPoints();
     if (!pts.length) return;
     const nowT = uvDataCache.now.time;
     selectedSegmentTimestamp = selectedSegmentTimestamp||nowT;
@@ -223,7 +223,7 @@
     const selectedHour = new Date(selPt.time).getHours() % 12 || 12;
     for (let hr = 1; hr <= 12; hr++) {
       const pt = pts.find(p => (new Date(p.time).getHours() % 12 || 12) === hr);
-      const riskColor = getRisk(pt ? pt.uvi : 0).color;
+      const riskColor = getUVRiskLevel(pt ? pt.uvi : 0).color;
       const startAngle = (hr * 30 - 90) * Math.PI/180;
       const endAngle = ((hr % 12 + 1) * 30 - 90) * Math.PI/180;
       const x1 = 50 + Math.cos(startAngle) * 45;
