@@ -235,7 +235,7 @@
     svg += `</svg>`;
 
     const risk = getRisk(selPt.uvi);
-    const timeToBurnMin = calcSafeTime(selPt.uvi, settings.skinType);
+    const timeToBurnMin = calcSafeTime(selPt.uvi, userSettings.skinType);
     let burnHtml = "";
     if (selPt.uvi > 2) {
       burnHtml = `<div class="burn-time">Burn in ${timeToBurnMin}m</div>`;
@@ -279,7 +279,7 @@
       return;
     }
     try {
-      const url = `https://currentuvindex.com/api/v1/uvi?latitude=${settings.latitude}&longitude=${settings.longitude}`;
+      const url = `https://currentuvindex.com/api/v1/uvi?latitude=${userSettings.latitude}&longitude=${userSettings.longitude}`;
       const resp = await fetch(url);
       if(!resp.ok) throw new Error("HTTP "+resp.status);
       const data = await resp.json();
