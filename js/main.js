@@ -215,31 +215,21 @@
         <div class="label">${risk.label}</div>
       </div>`;
     circleEl.innerHTML = svg + center;
-    circleEl.onclick = (ev)=>{
+    circleEl.onclick = (ev) => {
       const rect = circleEl.getBoundingClientRect();
-      const cx = rect.left + rect.width/2;
-      const cy = rect.top  + rect.height/2;
+      const cx = rect.left + rect.width / 2;
+      const cy = rect.top + rect.height / 2;
       const dx = ev.clientX - cx;
       const dy = ev.clientY - cy;
-      let clickAngle = Math.atan2(dx, -dy) * (180/Math.PI);
+      let clickAngle = Math.atan2(dx, -dy) * (180 / Math.PI);
       if (clickAngle < 0) clickAngle += 360;
-      let closestPt = null;
-      let minDiff = 360;
-      pts.forEach(pt=>{
-        const dt = new Date(pt.time);
-        let hr = dt.getHours() % 12;
-        const mn = dt.getMinutes() / 60;
-        let ptAngle = (hr + mn) * 30;
-        if (ptAngle < 0) ptAngle += 360;
-        const diff = Math.abs(ptAngle - clickAngle);
-        const adjDiff = Math.min(diff, 360 - diff);
-        if (adjDiff < minDiff){
-          minDiff = adjDiff;
-          closestPt = pt;
-        }
-      });
-      if (closestPt){
-        selectedTime = closestPt.time;
+      // determine clicked segment (each 30° slice from top)
+      const seg = Math.round(clickAngle / 30);
+      const hr = (seg + 11) % 12 + 1;
+      // find a data point matching that hour
+      const ptMatch = pts.find(pt => (new Date(pt.time).getHours() % 12 || 12) === hr);
+      if (ptMatch) {
+        selectedTime = ptMatch.time;
         buildCircle();
       }
     };
