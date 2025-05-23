@@ -54,10 +54,10 @@
     lastFetchTimestamp = new Date(payload.ts);
   }
   function loadUvStorage() {
-    const s = localStorage.getItem(UV_DATA_STORAGE_KEY);
-    if (!s) return false;
+    const storedUvData = localStorage.getItem(UV_DATA_STORAGE_KEY);
+    if (!storedUvData) return false;
     try {
-      const { data, ts } = JSON.parse(s);
+      const { data, ts } = JSON.parse(storedUvData);
       if (Date.now() - ts < UV_DATA_EXPIRY_MS) {
         uvDataCache = data;
         lastFetchTimestamp = new Date(ts);
@@ -213,7 +213,7 @@
   }
 
   function renderUVCircleWidget() {
-    const pts = getAllUVDataPoints();
+    const dataPoints = getAllUVDataPoints();
     if (!pts.length) return;
     const nowT = uvDataCache.now.time;
     selectedSegmentTimestamp = selectedSegmentTimestamp||nowT;
