@@ -159,7 +159,7 @@
 
     const uvi = uvDataCache.now.uvi;
     if (uvi <= 2) {
-      const now = new Date(uvData.now.time);
+      const now = new Date(uvDataCache.now.time);
       const future = getAllPoints()
         .filter(p => new Date(p.time) > now && p.uvi > 2)
         .sort((a, b) => new Date(a.time) - new Date(b.time));
