@@ -10,13 +10,13 @@
 
   // ===== STATE =====
   let userSettings = { latitude:"", longitude:"", skinType:"1" };
-  let uvData   = null;
-  let lastTs   = null;
-  let selectedTime = null;
+  let uvDataCache   = null;
+  let lastFetchTimestamp   = null;
+  let selectedSegmentTimestamp = null;
 
   // ===== DOM REFS =====
-  const tabHome       = document.getElementById("tab-home");
-  const tabSettings   = document.getElementById("tab-settings");
+  const tabHomeButton       = document.getElementById("tab-home");
+  const tabSettingsButton   = document.getElementById("tab-settings");
   const viewHome      = document.getElementById("view-home");
   const viewSettings  = document.getElementById("view-settings");
   const loadingEl     = document.getElementById("loading");
@@ -51,7 +51,7 @@
   function saveUvStorage(data) {
     const payload = { data, ts:Date.now() };
     localStorage.setItem(UV_DATA_STORAGE_KEY, JSON.stringify(payload));
-    lastTs = new Date(payload.ts);
+    lastFetchTimestamp = new Date(payload.ts);
   }
   function loadUvStorage() {
     const s = localStorage.getItem(UV_DATA_STORAGE_KEY);
@@ -59,8 +59,8 @@
     try {
       const { data, ts } = JSON.parse(s);
       if (Date.now() - ts < UV_DATA_EXPIRY_MS) {
-        uvData = data;
-        lastTs = new Date(ts);
+        uvDataCache = data;
+        lastFetchTimestamp = new Date(ts);
         return true;
       }
     } catch(_){}
@@ -82,11 +82,11 @@
     });
   }
   function getAllPoints() {
-    if (!uvData) return [];
+    if (!uvDataCache) return [];
     return [
-      ...(uvData.history||[]),
-      uvData.now,
-      ...(uvData.forecast||[])
+      ...(uvDataCache.history||[]),
+      uvDataCache.now,
+      ...(uvDataCache.forecast||[])
     ].sort((a,b)=> new Date(a.time) - new Date(b.time));
   }
   function findClosest(tp) {
@@ -118,13 +118,13 @@
   // ===== UI UPDATES =====
   function switchTab(tab) {
     if (tab==="home") {
-      tabHome.classList.add("active");
-      tabSettings.classList.remove("active");
+      tabHomeButton.classList.add("active");
+      tabSettingsButton.classList.remove("active");
       viewHome.classList.add("active");
       viewSettings.classList.remove("active");
     } else {
-      tabHome.classList.remove("active");
-      tabSettings.classList.add("active");
+      tabHomeButton.classList.remove("active");
+      tabSettingsButton.classList.add("active");
       viewHome.classList.remove("active");
       viewSettings.classList.add("active");
     }
@@ -140,7 +140,7 @@
   }
 
   function renderHome() {
-    if (!uvData) {
+    if (!uvDataCache) {
       homeContentEl.style.display = "none";
       hideLoading();
       showMessage(`
@@ -157,7 +157,7 @@
     hideLoading();
     homeContentEl.style.display = "flex";
 
-    const uvi = uvData.now.uvi;
+    const uvi = uvDataCache.now.uvi;
     if (uvi <= 2) {
       const now = new Date(uvData.now.time);
       const future = getAllPoints()
@@ -197,7 +197,7 @@
     skinDisplayEl.textContent = skinMap[userSettings.skinType]||"";
 
     let txt = `Location: ${userSettings.latitude}, ${userSettings.longitude}`;
-    if (lastTs) txt += `<br>Last: ${formatDate(lastTs)}`;
+    if (lastFetchTimestamp) txt += `<br>Last: ${formatDate(lastFetchTimestamp)}`;
     locInfoEl.innerHTML = txt;
 
     buildCircle();
@@ -215,9 +215,9 @@
   function buildCircle() {
     const pts = getAllPoints();
     if (!pts.length) return;
-    const nowT = uvData.now.time;
-    selectedTime = selectedTime||nowT;
-    const selPt = findClosest(selectedTime);
+    const nowT = uvDataCache.now.time;
+    selectedSegmentTimestamp = selectedSegmentTimestamp||nowT;
+    const selPt = findClosest(selectedSegmentTimestamp);
 
     let svg = `<svg viewBox="0 0 100 100" preserveAspectRatio="xMidYMid meet">`;
     const selectedHour = new Date(selPt.time).getHours() % 12 || 12;
@@ -263,7 +263,7 @@
       // find a data point matching that hour
       const ptMatch = pts.find(pt => (new Date(pt.time).getHours() % 12 || 12) === hr);
       if (ptMatch) {
-        selectedTime = ptMatch.time;
+        selectedSegmentTimestamp = ptMatch.time;
         buildCircle();
       }
     };
@@ -283,7 +283,7 @@
       const resp = await fetch(url);
       if(!resp.ok) throw new Error("HTTP "+resp.status);
       const data = await resp.json();
-      uvData = data;
+      uvDataCache = data;
       saveUvStorage(data);
       renderHome();
     }
@@ -314,8 +314,8 @@
     inpLng.value = userSettings.longitude;
     inpSkin.value = userSettings.skinType;
 
-    tabHome.onclick     = ()=>switchTab("home");
-    tabSettings.onclick = ()=>switchTab("settings");
+    tabHomeButton.onclick     = ()=>switchTab("home");
+    tabSettingsButton.onclick = ()=>switchTab("settings");
 
     form.onsubmit = e=>{
       e.preventDefault();
