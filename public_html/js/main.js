@@ -230,7 +230,7 @@
       const y1 = 50 + Math.sin(startAngle) * 45;
       const x2 = 50 + Math.cos(endAngle) * 45;
       const y2 = 50 + Math.sin(endAngle) * 45;
-      svg += `<path d="M${x1.toFixed(2)} ${y1.toFixed(2)} A45 45 0 0 1 ${x2.toFixed(2)} ${y2.toFixed(2)}" stroke="${riskColor}" stroke-width="${hr === selectedHour ? 12 : 8}" fill="none"/>`;
+      svg += `<path d="M${x1.toFixed(2)} ${y1.toFixed(2)} A45 45 0 0 1 ${x2.toFixed(2)} ${y2.toFixed(2)}" stroke="${riskColor}" stroke-width="${pt && hr === selectedHour ? 12 : 8}" fill="none"/>`;
     }
     svg += `</svg>`;
 
