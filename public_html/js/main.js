@@ -92,10 +92,10 @@
   function findClosestDataPointByTime(tp) {
     const dataPoints = getAllUVDataPoints();
     const tgt = new Date(tp).getTime();
-    let best = dataPoints[0], md = Math.abs(new Date(dataPoints[0].time).getTime()-tgt);
+    let best = dataPoints[0], minDiff = Math.abs(new Date(dataPoints[0].time).getTime()-tgt);
     for(let i=1;i<dataPoints.length;i++){
       const d = Math.abs(new Date(dataPoints[i].time).getTime()-tgt);
-      if (d<md){ md=d; best=dataPoints[i]; }
+      if (d<minDiff){ minDiff=d; best=dataPoints[i]; }
     }
     return best;
   }
@@ -215,12 +215,12 @@
   function renderUVCircleWidget() {
     const dataPoints = getAllUVDataPoints();
     if (!dataPoints.length) return;
-    const nowT = uvDataCache.now.time;
-    selectedSegmentTimestamp = selectedSegmentTimestamp||nowT;
-    const selPt = findClosestDataPointByTime(selectedSegmentTimestamp);
+    const currentTimestamp = uvDataCache.now.time;
+    selectedSegmentTimestamp = selectedSegmentTimestamp||currentTimestamp;
+    const selectedDataPoint = findClosestDataPointByTime(selectedSegmentTimestamp);
 
     let svg = `<svg viewBox="0 0 100 100" preserveAspectRatio="xMidYMid meet">`;
-    const selectedHour = new Date(selPt.time).getHours() % 12 || 12;
+    const selectedHour = new Date(selectedDataPoint.time).getHours() % 12 || 12;
     for (let hr = 1; hr <= 12; hr++) {
       const pt = dataPoints.find(p => (new Date(p.time).getHours() % 12 || 12) === hr);
       const riskColor = getUVRiskLevel(pt ? pt.uvi : 0).color;
@@ -230,20 +230,20 @@
       const y1 = 50 + Math.sin(startAngle) * 45;
       const x2 = 50 + Math.cos(endAngle) * 45;
       const y2 = 50 + Math.sin(endAngle) * 45;
-      svg += `<path d="M${x1.toFixed(2)} ${y1.toFixed(2)} A45 45 0 0 1 ${x2.toFixed(2)} ${y2.toFixed(2)}" stroke="${riskColor}" stroke-width="${pt && pt.time === selPt.time ? 12 : 8}" fill="none"/>`;
+      svg += `<path d="M${x1.toFixed(2)} ${y1.toFixed(2)} A45 45 0 0 1 ${x2.toFixed(2)} ${y2.toFixed(2)}" stroke="${riskColor}" stroke-width="${pt && pt.time === selectedDataPoint.time ? 12 : 8}" fill="none"/>`;
     }
     svg += `</svg>`;
 
-    const risk = getUVRiskLevel(selPt.uvi);
-    const timeToBurnMin = calculateSafeExposureTime(selPt.uvi, userSettings.skinType);
+    const risk = getUVRiskLevel(selectedDataPoint.uvi);
+    const timeToBurnMin = calculateSafeExposureTime(selectedDataPoint.uvi, userSettings.skinType);
     let burnHtml = "";
-    if (selPt.uvi > 2) {
+    if (selectedDataPoint.uvi > 2) {
       burnHtml = `<div class="burn-time">Burn in ${timeToBurnMin}m</div>`;
     }
     const center = `
       <div class="center-info">
-        <div class="time">${formatTimeString(selPt.time)}</div>
-        <div class="uvi" style="color:${risk.color}">${selPt.uvi.toFixed(1)}</div>
+        <div class="time">${formatTimeString(selectedDataPoint.time)}</div>
+        <div class="uvi" style="color:${risk.color}">${selectedDataPoint.uvi.toFixed(1)}</div>
         <div class="label">${risk.label}</div>
         ${burnHtml}
       </div>`;
