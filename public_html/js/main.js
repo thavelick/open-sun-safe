@@ -35,18 +35,18 @@
 
   // ===== UTILITIES =====
   function saveSettings() {
-    localStorage.setItem(SETTINGS_KEY, JSON.stringify(settings));
+    localStorage.setItem(SETTINGS_STORAGE_KEY, JSON.stringify(userSettings));
   }
   function loadSettings() {
-    const s = localStorage.getItem(SETTINGS_KEY);
+    const s = localStorage.getItem(SETTINGS_STORAGE_KEY);
     if (s) {
       try {
-        settings = JSON.parse(s);
+        userSettings = JSON.parse(s);
       } catch(_){}
     }
   }
   function isSettingsReady() {
-    return settings.latitude && settings.longitude && settings.skinType;
+    return userSettings.latitude && userSettings.longitude && userSettings.skinType;
   }
   function saveUvStorage(data) {
     const payload = { data, ts:Date.now() };
