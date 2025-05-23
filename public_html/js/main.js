@@ -92,10 +92,10 @@
   function findClosestDataPointByTime(tp) {
     const dataPoints = getAllUVDataPoints();
     const tgt = new Date(tp).getTime();
-    let best = pts[0], md = Math.abs(new Date(pts[0].time).getTime()-tgt);
-    for(let i=1;i<pts.length;i++){
-      const d = Math.abs(new Date(pts[i].time).getTime()-tgt);
-      if (d<md){ md=d; best=pts[i]; }
+    let best = dataPoints[0], md = Math.abs(new Date(dataPoints[0].time).getTime()-tgt);
+    for(let i=1;i<dataPoints.length;i++){
+      const d = Math.abs(new Date(dataPoints[i].time).getTime()-tgt);
+      if (d<md){ md=d; best=dataPoints[i]; }
     }
     return best;
   }
@@ -214,7 +214,7 @@
 
   function renderUVCircleWidget() {
     const dataPoints = getAllUVDataPoints();
-    if (!pts.length) return;
+    if (!dataPoints.length) return;
     const nowT = uvDataCache.now.time;
     selectedSegmentTimestamp = selectedSegmentTimestamp||nowT;
     const selPt = findClosestDataPointByTime(selectedSegmentTimestamp);
