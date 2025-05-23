@@ -40,11 +40,11 @@
 - [x] init -> initializeApp
 - [x] str -> timeString
 - [x] d -> dateObject
-- [ ] h -> hour12
-- [ ] u -> uvIndex
-- [ ] resp -> response
-- [ ] pts -> dataPoints
-- [ ] s -> storedSettings
+- [x] h -> hour12
+- [x] u -> uvIndex
+- [x] resp -> response
+- [x] pts -> dataPoints
+- [x] s -> storedSettings
 - [ ] md -> minDiff
 - [ ] nowT -> currentTimestamp
 - [ ] selPt -> selectedDataPoint

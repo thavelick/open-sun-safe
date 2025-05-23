@@ -38,10 +38,10 @@
     localStorage.setItem(SETTINGS_STORAGE_KEY, JSON.stringify(userSettings));
   }
   function loadSettings() {
-    const s = localStorage.getItem(SETTINGS_STORAGE_KEY);
-    if (s) {
+    const storedSettings = localStorage.getItem(SETTINGS_STORAGE_KEY);
+    if (storedSettings) {
       try {
-        userSettings = JSON.parse(s);
+        userSettings = JSON.parse(storedSettings);
       } catch(_){}
     }
   }
@@ -71,10 +71,10 @@
   }
   function formatTimeString(timeString) {
     const d = new Date(timeString);
-    let h = d.getHours();
-    let ampm = h>=12?"PM":"AM";
-    h = h%12||12;
-    return h + ":" + formatTwoDigit(d.getMinutes()) + " " + ampm;
+    let hour12 = d.getHours();
+    let ampm = hour12>=12?"PM":"AM";
+    hour12 = hour12%12||12;
+    return hour12 + ":" + formatTwoDigit(d.getMinutes()) + " " + ampm;
   }
   function formatDateString(dateObject) {
     return dateObject.toLocaleString([], {
@@ -90,7 +90,7 @@
     ].sort((a,b)=> new Date(a.time) - new Date(b.time));
   }
   function findClosestDataPointByTime(tp) {
-    const pts = getAllUVDataPoints();
+    const dataPoints = getAllUVDataPoints();
     const tgt = new Date(tp).getTime();
     let best = pts[0], md = Math.abs(new Date(pts[0].time).getTime()-tgt);
     for(let i=1;i<pts.length;i++){
@@ -99,12 +99,12 @@
     }
     return best;
   }
-  function getUVRiskLevel(u) {
-    if (u < 1) return { label: "No UV", color: "#1E90FF" };
-    if (u < 3) return { label: "Low UV", color: "#2ed573" };
-    if (u < 6) return { label: "Moderate UV", color: "#ffa502" };
-    if (u < 8) return { label: "High UV", color: "#ff7f50" };
-    if (u < 11) return { label: "Very High UV", color: "#ff4757" };
+  function getUVRiskLevel(uvIndex) {
+    if (uvIndex < 1) return { label: "No UV", color: "#1E90FF" };
+    if (uvIndex < 3) return { label: "Low UV", color: "#2ed573" };
+    if (uvIndex < 6) return { label: "Moderate UV", color: "#ffa502" };
+    if (uvIndex < 8) return { label: "High UV", color: "#ff7f50" };
+    if (uvIndex < 11) return { label: "Very High UV", color: "#ff4757" };
     return { label: "Extreme UV", color: "#9c27b0" };
   }
   function calculateSafeExposureTime(u, skin) {
@@ -222,7 +222,7 @@
     let svg = `<svg viewBox="0 0 100 100" preserveAspectRatio="xMidYMid meet">`;
     const selectedHour = new Date(selPt.time).getHours() % 12 || 12;
     for (let hr = 1; hr <= 12; hr++) {
-      const pt = pts.find(p => (new Date(p.time).getHours() % 12 || 12) === hr);
+      const pt = dataPoints.find(p => (new Date(p.time).getHours() % 12 || 12) === hr);
       const riskColor = getUVRiskLevel(pt ? pt.uvi : 0).color;
       const startAngle = (hr * 30 - 90) * Math.PI/180;
       const endAngle = ((hr % 12 + 1) * 30 - 90) * Math.PI/180;
@@ -261,7 +261,7 @@
       const seg = Math.floor((clickAngle) / 30) % 12;
       const hr = seg === 0 ? 12 : seg;
       // find a data point matching that hour
-      const ptMatch = pts.find(pt => (new Date(pt.time).getHours() % 12 || 12) === hr);
+      const ptMatch = dataPoints.find(pt => (new Date(pt.time).getHours() % 12 || 12) === hr);
       if (ptMatch) {
         selectedSegmentTimestamp = ptMatch.time;
         renderUVCircleWidget();
@@ -280,9 +280,9 @@
     }
     try {
       const url = `https://currentuvindex.com/api/v1/uvi?latitude=${userSettings.latitude}&longitude=${userSettings.longitude}`;
-      const resp = await fetch(url);
-      if(!resp.ok) throw new Error("HTTP "+resp.status);
-      const data = await resp.json();
+      const response = await fetch(url);
+      if(!response.ok) throw new Error("HTTP "+response.status);
+      const data = await response.json();
       uvDataCache = data;
       saveUvStorage(data);
       renderHomeView();
