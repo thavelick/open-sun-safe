@@ -18,11 +18,11 @@
 - [x] skinDisplayEl -> skinTypeDisplayElement
 - [x] locInfoEl -> locationInfoElement
 - [x] refreshBtn -> refreshButton
-- [ ] form -> settingsForm
-- [ ] inpLat -> inputLatitudeElement
-- [ ] inpLng -> inputLongitudeElement
-- [ ] inpSkin -> inputSkinTypeElement
-- [ ] wrapCurrency -> formatTwoDigit
+- [x] form -> settingsForm
+- [x] inpLat -> inputLatitudeElement
+- [x] inpLng -> inputLongitudeElement
+- [x] inpSkin -> inputSkinTypeElement
+- [x] wrapCurrency -> formatTwoDigit
 - [ ] formatTime -> formatTimeString
 - [ ] formatDate -> formatDateString
 - [ ] getAllPoints -> getAllUVDataPoints

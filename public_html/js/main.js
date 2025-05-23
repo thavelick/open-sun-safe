@@ -28,10 +28,10 @@
   const locationInfoElement = document.getElementById("location-info");
   const refreshButton = document.getElementById("refresh-btn");
 
-  const form          = document.getElementById("settings-form");
-  const inpLat        = document.getElementById("inp-lat");
-  const inpLng        = document.getElementById("inp-lng");
-  const inpSkin       = document.getElementById("inp-skin");
+  const settingsForm = document.getElementById("settings-form");
+  const inputLatitudeElement = document.getElementById("inp-lat");
+  const inputLongitudeElement = document.getElementById("inp-lng");
+  const inputSkinTypeElement = document.getElementById("inp-skin");
 
   // ===== UTILITIES =====
   function saveSettings() {
@@ -66,7 +66,7 @@
     } catch(_){}
     return false;
   }
-  function wrapCurrency(num){
+  function formatTwoDigit(num){
     return (num<10? "0"+num : num);
   }
   function formatTime(str) {
@@ -74,7 +74,7 @@
     let h = d.getHours();
     let ampm = h>=12?"PM":"AM";
     h = h%12||12;
-    return h + ":" + wrapCurrency(d.getMinutes()) + " " + ampm;
+    return h + ":" + formatTwoDigit(d.getMinutes()) + " " + ampm;
   }
   function formatDate(d) {
     return d.toLocaleString([], {
@@ -167,7 +167,7 @@
       if (future.length) {
         const tu = new Date(future[0].time);
         const hrs = tu.getHours() % 12 || 12;
-        const mins = wrapCurrency(tu.getMinutes());
+        const mins = formatTwoDigit(tu.getMinutes());
         const ampm = tu.getHours() >= 12 ? "PM" : "AM";
         const today = new Date();
         let dayLabel = "";
