@@ -22,11 +22,11 @@
   const loadingElement = document.getElementById("loading");
   const messageElement = document.getElementById("message");
   const homeContentElement = document.getElementById("home-content");
-  const circleEl      = document.getElementById("circle-widget");
-  const safeTimeEl    = document.getElementById("safe-time");
-  const skinDisplayEl = document.getElementById("skin-display");
-  const locInfoEl     = document.getElementById("location-info");
-  const refreshBtn    = document.getElementById("refresh-btn");
+  const circleWidgetElement = document.getElementById("circle-widget");
+  const safeTimeElement = document.getElementById("safe-time");
+  const skinTypeDisplayElement = document.getElementById("skin-display");
+  const locationInfoElement = document.getElementById("location-info");
+  const refreshButton = document.getElementById("refresh-btn");
 
   const form          = document.getElementById("settings-form");
   const inpLat        = document.getElementById("inp-lat");
@@ -180,11 +180,11 @@
         }
         label = `Safe until ${hrs}:${mins} ${ampm}` + (dayLabel ? ` ${dayLabel}` : "");
       }
-      safeTimeEl.textContent = label;
-      safeTimeEl.style.color = "var(--info-color)";
+      safeTimeElement.textContent = label;
+      safeTimeElement.style.color = "var(--info-color)";
     } else {
-      safeTimeEl.textContent = `Safe in the sun for ${Math.round(calcSafeTime(uvi, userSettings.skinType))} minutes`;
-      safeTimeEl.style.color = "var(--primary-color)";
+      safeTimeElement.textContent = `Safe in the sun for ${Math.round(calcSafeTime(uvi, userSettings.skinType))} minutes`;
+      safeTimeElement.style.color = "var(--primary-color)";
     }
     const skinMap = {
       "1":"Type I (Very fair)",
@@ -194,11 +194,11 @@
       "5":"Type V (Brown)",
       "6":"Type VI (Dark)"
     };
-    skinDisplayEl.textContent = skinMap[userSettings.skinType]||"";
+    skinTypeDisplayElement.textContent = skinMap[userSettings.skinType]||"";
 
     let txt = `Location: ${userSettings.latitude}, ${userSettings.longitude}`;
     if (lastFetchTimestamp) txt += `<br>Last: ${formatDate(lastFetchTimestamp)}`;
-    locInfoEl.innerHTML = txt;
+    locationInfoElement.innerHTML = txt;
 
     buildCircle();
   }
@@ -247,9 +247,9 @@
         <div class="label">${risk.label}</div>
         ${burnHtml}
       </div>`;
-    circleEl.innerHTML = svg + center;
-    circleEl.onclick = (ev) => {
-      const rect = circleEl.getBoundingClientRect();
+    circleWidgetElement.innerHTML = svg + center;
+    circleWidgetElement.onclick = (ev) => {
+      const rect = circleWidgetElement.getBoundingClientRect();
       const cx = rect.left + rect.width / 2;
       const cy = rect.top + rect.height / 2;
       const dx = ev.clientX - cx;
@@ -327,7 +327,7 @@
       switchTab("home");
     };
 
-    refreshBtn.onclick = ()=>fetchUv(true);
+    refreshButton.onclick = ()=>fetchUv(true);
 
     fetchUv(false);
   }

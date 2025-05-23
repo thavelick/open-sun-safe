@@ -13,11 +13,11 @@
 - [x] loadingEl -> loadingElement
 - [x] messageEl -> messageElement
 - [x] homeContentEl -> homeContentElement
-- [ ] circleEl -> circleWidgetElement
-- [ ] safeTimeEl -> safeTimeElement
-- [ ] skinDisplayEl -> skinTypeDisplayElement
-- [ ] locInfoEl -> locationInfoElement
-- [ ] refreshBtn -> refreshButton
+- [x] circleEl -> circleWidgetElement
+- [x] safeTimeEl -> safeTimeElement
+- [x] skinDisplayEl -> skinTypeDisplayElement
+- [x] locInfoEl -> locationInfoElement
+- [x] refreshBtn -> refreshButton
 - [ ] form -> settingsForm
 - [ ] inpLat -> inputLatitudeElement
 - [ ] inpLng -> inputLongitudeElement
