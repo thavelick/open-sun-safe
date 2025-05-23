@@ -206,7 +206,7 @@
   function displayLoadingIndicator() {
     loadingElement.style.display = "flex";
     homeContentElement.style.display = "none";
-    hideMessage();
+    clearMessage();
   }
   function hideLoadingIndicator() {
     loadingElement.style.display = "none";
