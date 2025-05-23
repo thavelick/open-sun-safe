@@ -25,9 +25,9 @@
 - [x] wrapCurrency -> formatTwoDigit
 - [ ] formatTime -> formatTimeString
 - [ ] formatDate -> formatDateString
-- [ ] getAllPoints -> getAllUVDataPoints
+- [x] getAllPoints -> getAllUVDataPoints
 - [ ] findClosest -> findClosestDataPointByTime
-- [ ] getRisk -> getUVRiskLevel
+- [x] getRisk -> getUVRiskLevel
 - [ ] calcSafeTime -> calculateSafeExposureTime
 - [ ] switchTab -> switchTabView
 - [ ] showMessage -> displayMessage
