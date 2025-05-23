@@ -243,7 +243,7 @@
     const center = `
       <div class="center-info">
         <div class="time">${formatTime(selPt.time)}</div>
-        <div class="uvi">${selPt.uvi.toFixed(1)}</div>
+        <div class="uvi" style="color:${risk.color}">${selPt.uvi.toFixed(1)}</div>
         <div class="label">${risk.label}</div>
         ${burnHtml}
       </div>`;
