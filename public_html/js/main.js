@@ -69,15 +69,15 @@
   function formatTwoDigit(num){
     return (num<10? "0"+num : num);
   }
-  function formatTimeString(str) {
-    const d = new Date(str);
+  function formatTimeString(timeString) {
+    const d = new Date(timeString);
     let h = d.getHours();
     let ampm = h>=12?"PM":"AM";
     h = h%12||12;
     return h + ":" + formatTwoDigit(d.getMinutes()) + " " + ampm;
   }
-  function formatDateString(d) {
-    return d.toLocaleString([], {
+  function formatDateString(dateObject) {
+    return dateObject.toLocaleString([], {
       month:"short", day:"numeric", hour:"2-digit", minute:"2-digit"
     });
   }
@@ -150,7 +150,7 @@
             <button id="btn-fetch">Fetch UV Data</button>
           </div>
         </div>`);
-      document.getElementById("btn-fetch").onclick = ()=>fetchUv(true);
+      document.getElementById("btn-fetch").onclick = ()=>fetchUVData(true);
       return;
     }
     clearMessage();
@@ -200,7 +200,7 @@
     if (lastFetchTimestamp) txt += `<br>Last: ${formatDateString(lastFetchTimestamp)}`;
     locationInfoElement.innerHTML = txt;
 
-    buildCircle();
+    renderUVCircleWidget();
   }
 
   function displayLoadingIndicator() {
@@ -212,7 +212,7 @@
     loadingElement.style.display = "none";
   }
 
-  function buildCircle() {
+  function renderUVCircleWidget() {
     const pts = getAllUVDataPoints();
     if (!pts.length) return;
     const nowT = uvDataCache.now.time;
@@ -264,12 +264,12 @@
       const ptMatch = pts.find(pt => (new Date(pt.time).getHours() % 12 || 12) === hr);
       if (ptMatch) {
         selectedSegmentTimestamp = ptMatch.time;
-        buildCircle();
+        renderUVCircleWidget();
       }
     };
   }
 
-  async function fetchUv(force=false){
+  async function fetchUVData(force=false){
     if (!isSettingsReady()){
       switchTabView("settings"); return;
     }
@@ -291,13 +291,13 @@
       hideLoadingIndicator();
       displayMessage(`<div style="padding:24px; text-align:center">
         <p>Error loading UV data. Try again later.</p>
-        <button onclick="fetchUv(true)">Retry</button>
+        <button onclick="fetchUVData(true)">Retry</button>
       </div>`);
       console.error(err);
     }
   }
 
-  function init(){
+  function initializeApp(){
     loadSettings();
     if (!userSettings.latitude && navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(pos => {
@@ -323,16 +323,16 @@
       userSettings.longitude = inputLongitudeElement.value.trim();
       userSettings.skinType  = inputSkinTypeElement.value;
       saveSettings();
-      fetchUv(true);
+      fetchUVData(true);
       switchTabView("home");
     };
 
-    refreshButton.onclick = ()=>fetchUv(true);
+    refreshButton.onclick = ()=>fetchUVData(true);
 
-    fetchUv(false);
+    fetchUVData(false);
   }
 
   window.switchTabView = switchTabView;
-  window.fetchUv   = fetchUv;
-  document.addEventListener("DOMContentLoaded", init);
+  window.fetchUVData   = fetchUVData;
+  document.addEventListener("DOMContentLoaded", initializeApp);
 })();

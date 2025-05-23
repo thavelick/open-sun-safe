@@ -35,11 +35,11 @@
 - [x] renderHome -> renderHomeView
 - [x] showLoading -> displayLoadingIndicator
 - [x] hideLoading -> hideLoadingIndicator
-- [ ] buildCircle -> renderUVCircleWidget
-- [ ] fetchUv -> fetchUVData
-- [ ] init -> initializeApp
-- [ ] str -> timeString
-- [ ] d -> dateObject
+- [x] buildCircle -> renderUVCircleWidget
+- [x] fetchUv -> fetchUVData
+- [x] init -> initializeApp
+- [x] str -> timeString
+- [x] d -> dateObject
 - [ ] h -> hour12
 - [ ] u -> uvIndex
 - [ ] resp -> response
