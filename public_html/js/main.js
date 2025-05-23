@@ -236,12 +236,16 @@
 
     const risk = getRisk(selPt.uvi);
     const timeToBurnMin = calcSafeTime(selPt.uvi, settings.skinType);
+    let burnHtml = "";
+    if (selPt.uvi > 2) {
+      burnHtml = `<div class="burn-time">Burn in ${timeToBurnMin}m</div>`;
+    }
     const center = `
       <div class="center-info">
         <div class="time">${formatTime(selPt.time)}</div>
         <div class="uvi">${selPt.uvi.toFixed(1)}</div>
         <div class="label">${risk.label}</div>
-        <div class="burn-time">Burn in ${timeToBurnMin}m</div>
+        ${burnHtml}
       </div>`;
     circleEl.innerHTML = svg + center;
     circleEl.onclick = (ev) => {
