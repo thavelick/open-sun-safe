@@ -158,7 +158,32 @@
     homeContentEl.style.display = "flex";
 
     const uvi = uvData.now.uvi;
-    safeTimeEl.textContent = Math.round(calcSafeTime(uvi, settings.skinType)) + " min";
+    if (uvi <= 2) {
+      const now = new Date(uvData.now.time);
+      const future = getAllPoints()
+        .filter(p => new Date(p.time) > now && p.uvi > 2)
+        .sort((a, b) => new Date(a.time) - new Date(b.time));
+      let label = Math.round(calcSafeTime(uvi, settings.skinType)) + " min";
+      if (future.length) {
+        const tu = new Date(future[0].time);
+        const hrs = tu.getHours() % 12 || 12;
+        const mins = wrapCurrency(tu.getMinutes());
+        const ampm = tu.getHours() >= 12 ? "PM" : "AM";
+        const today = new Date();
+        let dayLabel = "";
+        if (tu.toDateString() === today.toDateString()) {
+          dayLabel = "today";
+        } else {
+          const tm = new Date();
+          tm.setDate(today.getDate() + 1);
+          if (tu.toDateString() === tm.toDateString()) dayLabel = "tomorrow";
+        }
+        label = `Safe until ${hrs}:${mins} ${ampm}` + (dayLabel ? ` ${dayLabel}` : "");
+      }
+      safeTimeEl.textContent = label;
+    } else {
+      safeTimeEl.textContent = Math.round(calcSafeTime(uvi, settings.skinType)) + " min";
+    }
     const skinMap = {
       "1":"Type I (Very fair)",
       "2":"Type II (Fair)",
