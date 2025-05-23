@@ -108,11 +108,11 @@
     return { label: "Extreme UV", color: "#9c27b0" };
   }
   function calcSafeTime(u, skin) {
-    if (!u|| u<=0|| !skin|| !MED_VALUES[skin]) return 0;
+    if (!u || u <= 0 || !skin || !MED_VALUES[skin]) return 0;
     const MED = MED_VALUES[skin];
     const rate = u * 0.025;
     const mins = MED / rate;
-    return Math.floor(mins) / 60
+    return Math.floor(mins);
   }
 
   // ===== UI UPDATES =====
@@ -235,7 +235,7 @@
     svg += `</svg>`;
 
     const risk = getRisk(selPt.uvi);
-    const timeToBurnMin = Math.round(calcSafeTime(selPt.uvi, settings.skinType) * 60);
+    const timeToBurnMin = calcSafeTime(selPt.uvi, settings.skinType);
     const center = `
       <div class="center-info">
         <div class="time">${formatTime(selPt.time)}</div>
