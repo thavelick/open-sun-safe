@@ -181,8 +181,10 @@
         label = `Safe until ${hrs}:${mins} ${ampm}` + (dayLabel ? ` ${dayLabel}` : "");
       }
       safeTimeEl.textContent = label;
+      safeTimeEl.style.color = "var(--info-color)";
     } else {
       safeTimeEl.textContent = Math.round(calcSafeTime(uvi, settings.skinType)) + " min";
+      safeTimeEl.style.color = "var(--primary-color)";
     }
     const skinMap = {
       "1":"Type I (Very fair)",
