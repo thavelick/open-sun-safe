@@ -1,15 +1,15 @@
 ;(function(){
   // ===== CONSTANTS =====
-  const SETTINGS_KEY = "sunSafetySettings";
-  const UVDATA_KEY   = "sunSafetyUvData";
-  const EXPIRY       = 30*60*1000; // ms (30 minutes)
-  const MED_VALUES = {
+  const SETTINGS_STORAGE_KEY = "sunSafetySettings";
+  const UV_DATA_STORAGE_KEY   = "sunSafetyUvData";
+  const UV_DATA_EXPIRY_MS       = 30*60*1000; // ms (30 minutes)
+  const MINIMUM_ERYTHEMA_DOSE_VALUES = {
     "1":200, "2":250, "3":300,
     "4":450, "5":600, "6":1000
   };
 
   // ===== STATE =====
-  let settings = { latitude:"", longitude:"", skinType:"1" };
+  let userSettings = { latitude:"", longitude:"", skinType:"1" };
   let uvData   = null;
   let lastTs   = null;
   let selectedTime = null;
@@ -108,8 +108,8 @@
     return { label: "Extreme UV", color: "#9c27b0" };
   }
   function calcSafeTime(u, skin) {
-    if (!u || u <= 0 || !skin || !MED_VALUES[skin]) return 0;
-    const MED = MED_VALUES[skin];
+    if (!u || u <= 0 || !skin || !MINIMUM_ERYTHEMA_DOSE_VALUES[skin]) return 0;
+    const MED = MINIMUM_ERYTHEMA_DOSE_VALUES[skin];
     const rate = u * 0.025 * 60;
     const mins = MED / rate;
     return Math.floor(mins);
@@ -163,7 +163,7 @@
       const future = getAllPoints()
         .filter(p => new Date(p.time) > now && p.uvi > 2)
         .sort((a, b) => new Date(a.time) - new Date(b.time));
-      let label = Math.round(calcSafeTime(uvi, settings.skinType)) + " min";
+      let label = Math.round(calcSafeTime(uvi, userSettings.skinType)) + " min";
       if (future.length) {
         const tu = new Date(future[0].time);
         const hrs = tu.getHours() % 12 || 12;
@@ -183,7 +183,7 @@
       safeTimeEl.textContent = label;
       safeTimeEl.style.color = "var(--info-color)";
     } else {
-      safeTimeEl.textContent = `Safe in the sun for ${Math.round(calcSafeTime(uvi, settings.skinType))} minutes`;
+      safeTimeEl.textContent = `Safe in the sun for ${Math.round(calcSafeTime(uvi, userSettings.skinType))} minutes`;
       safeTimeEl.style.color = "var(--primary-color)";
     }
     const skinMap = {
@@ -194,9 +194,9 @@
       "5":"Type V (Brown)",
       "6":"Type VI (Dark)"
     };
-    skinDisplayEl.textContent = skinMap[settings.skinType]||"";
+    skinDisplayEl.textContent = skinMap[userSettings.skinType]||"";
 
-    let txt = `Location: ${settings.latitude}, ${settings.longitude}`;
+    let txt = `Location: ${userSettings.latitude}, ${userSettings.longitude}`;
     if (lastTs) txt += `<br>Last: ${formatDate(lastTs)}`;
     locInfoEl.innerHTML = txt;
 
@@ -299,29 +299,29 @@
 
   function init(){
     loadSettings();
-    if (!settings.latitude && navigator.geolocation) {
+    if (!userSettings.latitude && navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(pos => {
-        settings.latitude = pos.coords.latitude.toFixed(4);
-        settings.longitude = pos.coords.longitude.toFixed(4);
+        userSettings.latitude = pos.coords.latitude.toFixed(4);
+        userSettings.longitude = pos.coords.longitude.toFixed(4);
         saveSettings();
-        inpLat.value = settings.latitude;
-        inpLng.value = settings.longitude;
+        inpLat.value = userSettings.latitude;
+        inpLng.value = userSettings.longitude;
       }, err => {
         console.warn("Geolocation error:", err);
       });
     }
-    inpLat.value = settings.latitude;
-    inpLng.value = settings.longitude;
-    inpSkin.value = settings.skinType;
+    inpLat.value = userSettings.latitude;
+    inpLng.value = userSettings.longitude;
+    inpSkin.value = userSettings.skinType;
 
     tabHome.onclick     = ()=>switchTab("home");
     tabSettings.onclick = ()=>switchTab("settings");
 
     form.onsubmit = e=>{
       e.preventDefault();
-      settings.latitude  = inpLat.value.trim();
-      settings.longitude = inpLng.value.trim();
-      settings.skinType  = inpSkin.value;
+      userSettings.latitude  = inpLat.value.trim();
+      userSettings.longitude = inpLng.value.trim();
+      userSettings.skinType  = inpSkin.value;
       saveSettings();
       fetchUv(true);
       switchTab("home");

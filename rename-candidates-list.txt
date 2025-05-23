@@ -1,8 +1,8 @@
-- [ ] SETTINGS_KEY -> SETTINGS_STORAGE_KEY
-- [ ] UVDATA_KEY -> UV_DATA_STORAGE_KEY
-- [ ] EXPIRY -> UV_DATA_EXPIRY_MS
-- [ ] MED_VALUES -> MINIMUM_ERYTHEMA_DOSE_VALUES
-- [ ] settings -> userSettings
+- [x] SETTINGS_KEY -> SETTINGS_STORAGE_KEY
+- [x] UVDATA_KEY -> UV_DATA_STORAGE_KEY
+- [x] EXPIRY -> UV_DATA_EXPIRY_MS
+- [x] MED_VALUES -> MINIMUM_ERYTHEMA_DOSE_VALUES
+- [x] settings -> userSettings
 - [ ] uvData -> uvDataCache
 - [ ] lastTs -> lastFetchTimestamp
 - [ ] selectedTime -> selectedSegmentTimestamp
