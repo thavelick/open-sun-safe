@@ -205,8 +205,6 @@
       const y2 = 50 + Math.sin(endAngle) * 45;
       svg += `<path d="M${x1.toFixed(2)} ${y1.toFixed(2)} A45 45 0 0 1 ${x2.toFixed(2)} ${y2.toFixed(2)}" stroke="${riskColor}" stroke-width="${hr === selectedHour ? 12 : 8}" fill="none"/>`;
     }
-    const selectedHour = new Date(selPt.time).getHours() % 12 || 12;
-
     svg += `</svg>`;
 
     const risk = getRisk(selPt.uvi);
