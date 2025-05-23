@@ -17,11 +17,11 @@
   // ===== DOM REFS =====
   const tabHomeButton       = document.getElementById("tab-home");
   const tabSettingsButton   = document.getElementById("tab-settings");
-  const viewHome      = document.getElementById("view-home");
-  const viewSettings  = document.getElementById("view-settings");
-  const loadingEl     = document.getElementById("loading");
-  const messageEl     = document.getElementById("message");
-  const homeContentEl = document.getElementById("home-content");
+  const homeViewElement = document.getElementById("view-home");
+  const settingsViewElement = document.getElementById("view-settings");
+  const loadingElement = document.getElementById("loading");
+  const messageElement = document.getElementById("message");
+  const homeContentElement = document.getElementById("home-content");
   const circleEl      = document.getElementById("circle-widget");
   const safeTimeEl    = document.getElementById("safe-time");
   const skinDisplayEl = document.getElementById("skin-display");
@@ -131,17 +131,17 @@
   }
 
   function showMessage(html) {
-    messageEl.innerHTML = html;
-    messageEl.style.display = "block";
+    messageElement.innerHTML = html;
+    messageElement.style.display = "block";
   }
   function hideMessage() {
-    messageEl.style.display = "none";
-    messageEl.innerHTML = "";
+    messageElement.style.display = "none";
+    messageElement.innerHTML = "";
   }
 
   function renderHome() {
     if (!uvDataCache) {
-      homeContentEl.style.display = "none";
+      homeContentElement.style.display = "none";
       hideLoading();
       showMessage(`
         <div class="card">
@@ -155,7 +155,7 @@
     }
     hideMessage();
     hideLoading();
-    homeContentEl.style.display = "flex";
+    homeContentElement.style.display = "flex";
 
     const uvi = uvDataCache.now.uvi;
     if (uvi <= 2) {
@@ -204,12 +204,12 @@
   }
 
   function showLoading() {
-    loadingEl.style.display = "flex";
-    homeContentEl.style.display = "none";
+    loadingElement.style.display = "flex";
+    homeContentElement.style.display = "none";
     hideMessage();
   }
   function hideLoading() {
-    loadingEl.style.display = "none";
+    loadingElement.style.display = "none";
   }
 
   function buildCircle() {

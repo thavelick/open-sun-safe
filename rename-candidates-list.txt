@@ -8,11 +8,11 @@
 - [x] selectedTime -> selectedSegmentTimestamp
 - [x] tabHome -> tabHomeButton
 - [x] tabSettings -> tabSettingsButton
-- [ ] viewHome -> homeViewElement
-- [ ] viewSettings -> settingsViewElement
-- [ ] loadingEl -> loadingElement
-- [ ] messageEl -> messageElement
-- [ ] homeContentEl -> homeContentElement
+- [x] viewHome -> homeViewElement
+- [x] viewSettings -> settingsViewElement
+- [x] loadingEl -> loadingElement
+- [x] messageEl -> messageElement
+- [x] homeContentEl -> homeContentElement
 - [ ] circleEl -> circleWidgetElement
 - [ ] safeTimeEl -> safeTimeElement
 - [ ] skinDisplayEl -> skinTypeDisplayElement
