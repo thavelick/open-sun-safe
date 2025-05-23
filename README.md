@@ -11,7 +11,6 @@ https://currentuvindex.com/api/v1/uvi?latitude={lat}&longitude={lng}
 ## Features
 - Interactive circle view showing UV index by hour  
 - Estimated safe sun exposure time calculated based on skin type  
-- Data caching in `localStorage` for up to 24 hours  
 
 ## Usage
 1. Open `main.html` in your browser.  
