@@ -38,3 +38,5 @@ hideLoading -> hideLoadingIndicator
 buildCircle -> renderUVCircleWidget
 fetchUv -> fetchUVData
 init -> initializeApp
+nowT -> currentTimestamp
+selPt -> selectedDataPoint
