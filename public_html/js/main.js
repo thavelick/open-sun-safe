@@ -110,7 +110,7 @@
   function calcSafeTime(u, skin) {
     if (!u || u <= 0 || !skin || !MED_VALUES[skin]) return 0;
     const MED = MED_VALUES[skin];
-    const rate = u * 0.025;
+    const rate = u * 0.025 * 60;
     const mins = MED / rate;
     return Math.floor(mins);
   }
