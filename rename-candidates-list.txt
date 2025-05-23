@@ -23,13 +23,13 @@
 - [x] inpLng -> inputLongitudeElement
 - [x] inpSkin -> inputSkinTypeElement
 - [x] wrapCurrency -> formatTwoDigit
-- [ ] formatTime -> formatTimeString
-- [ ] formatDate -> formatDateString
+- [x] formatTime -> formatTimeString
+- [x] formatDate -> formatDateString
 - [x] getAllPoints -> getAllUVDataPoints
-- [ ] findClosest -> findClosestDataPointByTime
+- [x] findClosest -> findClosestDataPointByTime
 - [x] getRisk -> getUVRiskLevel
-- [ ] calcSafeTime -> calculateSafeExposureTime
-- [ ] switchTab -> switchTabView
+- [x] calcSafeTime -> calculateSafeExposureTime
+- [x] switchTab -> switchTabView
 - [ ] showMessage -> displayMessage
 - [ ] hideMessage -> clearMessage
 - [ ] renderHome -> renderHomeView

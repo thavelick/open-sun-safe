@@ -107,7 +107,7 @@
     if (u < 11) return { label: "Very High UV", color: "#ff4757" };
     return { label: "Extreme UV", color: "#9c27b0" };
   }
-  function calcSafeTime(u, skin) {
+  function calculateSafeExposureTime(u, skin) {
     if (!u || u <= 0 || !skin || !MINIMUM_ERYTHEMA_DOSE_VALUES[skin]) return 0;
     const MED = MINIMUM_ERYTHEMA_DOSE_VALUES[skin];
     const rate = u * 0.025 * 60;
@@ -116,7 +116,7 @@
   }
 
   // ===== UI UPDATES =====
-  function switchTab(tab) {
+  function switchTabView(tab) {
     if (tab==="home") {
       tabHomeButton.classList.add("active");
       tabSettingsButton.classList.remove("active");
@@ -163,7 +163,7 @@
       const future = getAllUVDataPoints()
         .filter(p => new Date(p.time) > now && p.uvi > 2)
         .sort((a, b) => new Date(a.time) - new Date(b.time));
-      let label = Math.round(calcSafeTime(uvi, userSettings.skinType)) + " min";
+      let label = Math.round(calculateSafeExposureTime(uvi, userSettings.skinType)) + " min";
       if (future.length) {
         const tu = new Date(future[0].time);
         const hrs = tu.getHours() % 12 || 12;
@@ -183,7 +183,7 @@
       safeTimeElement.textContent = label;
       safeTimeElement.style.color = "var(--info-color)";
     } else {
-      safeTimeElement.textContent = `Safe in the sun for ${Math.round(calcSafeTime(uvi, userSettings.skinType))} minutes`;
+      safeTimeElement.textContent = `Safe in the sun for ${Math.round(calculateSafeExposureTime(uvi, userSettings.skinType))} minutes`;
       safeTimeElement.style.color = "var(--primary-color)";
     }
     const skinMap = {
@@ -235,7 +235,7 @@
     svg += `</svg>`;
 
     const risk = getUVRiskLevel(selPt.uvi);
-    const timeToBurnMin = calcSafeTime(selPt.uvi, userSettings.skinType);
+    const timeToBurnMin = calculateSafeExposureTime(selPt.uvi, userSettings.skinType);
     let burnHtml = "";
     if (selPt.uvi > 2) {
       burnHtml = `<div class="burn-time">Burn in ${timeToBurnMin}m</div>`;
@@ -271,7 +271,7 @@
 
   async function fetchUv(force=false){
     if (!isSettingsReady()){
-      switchTab("settings"); return;
+      switchTabView("settings"); return;
     }
     showLoading();
     if (!force && loadUvStorage()){
@@ -314,8 +314,8 @@
     inputLongitudeElement.value = userSettings.longitude;
     inputSkinTypeElement.value = userSettings.skinType;
 
-    tabHomeButton.onclick     = ()=>switchTab("home");
-    tabSettingsButton.onclick = ()=>switchTab("settings");
+    tabHomeButton.onclick     = ()=>switchTabView("home");
+    tabSettingsButton.onclick = ()=>switchTabView("settings");
 
     settingsForm.onsubmit = e=>{
       e.preventDefault();
@@ -324,7 +324,7 @@
       userSettings.skinType  = inputSkinTypeElement.value;
       saveSettings();
       fetchUv(true);
-      switchTab("home");
+      switchTabView("home");
     };
 
     refreshButton.onclick = ()=>fetchUv(true);
@@ -332,7 +332,7 @@
     fetchUv(false);
   }
 
-  window.switchTab = switchTab;
+  window.switchTabView = switchTabView;
   window.fetchUv   = fetchUv;
   document.addEventListener("DOMContentLoaded", init);
 })();
