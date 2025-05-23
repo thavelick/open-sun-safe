@@ -142,7 +142,7 @@
   function renderHomeView() {
     if (!uvDataCache) {
       homeContentElement.style.display = "none";
-      hideLoading();
+      hideLoadingIndicator();
       displayMessage(`
         <div class="card">
           <div class="card-content" style="text-align:center;padding:24px">
@@ -154,7 +154,7 @@
       return;
     }
     clearMessage();
-    hideLoading();
+    hideLoadingIndicator();
     homeContentElement.style.display = "flex";
 
     const uvi = uvDataCache.now.uvi;
