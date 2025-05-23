@@ -69,19 +69,19 @@
   function formatTwoDigit(num){
     return (num<10? "0"+num : num);
   }
-  function formatTime(str) {
+  function formatTimeString(str) {
     const d = new Date(str);
     let h = d.getHours();
     let ampm = h>=12?"PM":"AM";
     h = h%12||12;
     return h + ":" + formatTwoDigit(d.getMinutes()) + " " + ampm;
   }
-  function formatDate(d) {
+  function formatDateString(d) {
     return d.toLocaleString([], {
       month:"short", day:"numeric", hour:"2-digit", minute:"2-digit"
     });
   }
-  function getAllPoints() {
+  function getAllUVDataPoints() {
     if (!uvDataCache) return [];
     return [
       ...(uvDataCache.history||[]),
@@ -89,7 +89,7 @@
       ...(uvDataCache.forecast||[])
     ].sort((a,b)=> new Date(a.time) - new Date(b.time));
   }
-  function findClosest(tp) {
+  function findClosestDataPointByTime(tp) {
     const pts = getAllPoints();
     const tgt = new Date(tp).getTime();
     let best = pts[0], md = Math.abs(new Date(pts[0].time).getTime()-tgt);
@@ -99,7 +99,7 @@
     }
     return best;
   }
-  function getRisk(u) {
+  function getUVRiskLevel(u) {
     if (u < 1) return { label: "No UV", color: "#1E90FF" };
     if (u < 3) return { label: "Low UV", color: "#2ed573" };
     if (u < 6) return { label: "Moderate UV", color: "#ffa502" };
@@ -160,7 +160,7 @@
     const uvi = uvDataCache.now.uvi;
     if (uvi <= 2) {
       const now = new Date(uvDataCache.now.time);
-      const future = getAllPoints()
+      const future = getAllUVDataPoints()
         .filter(p => new Date(p.time) > now && p.uvi > 2)
         .sort((a, b) => new Date(a.time) - new Date(b.time));
       let label = Math.round(calcSafeTime(uvi, userSettings.skinType)) + " min";
@@ -197,7 +197,7 @@
     skinTypeDisplayElement.textContent = skinMap[userSettings.skinType]||"";
 
     let txt = `Location: ${userSettings.latitude}, ${userSettings.longitude}`;
-    if (lastFetchTimestamp) txt += `<br>Last: ${formatDate(lastFetchTimestamp)}`;
+    if (lastFetchTimestamp) txt += `<br>Last: ${formatDateString(lastFetchTimestamp)}`;
     locationInfoElement.innerHTML = txt;
 
     buildCircle();
@@ -217,7 +217,7 @@
     if (!pts.length) return;
     const nowT = uvDataCache.now.time;
     selectedSegmentTimestamp = selectedSegmentTimestamp||nowT;
-    const selPt = findClosest(selectedSegmentTimestamp);
+    const selPt = findClosestDataPointByTime(selectedSegmentTimestamp);
 
     let svg = `<svg viewBox="0 0 100 100" preserveAspectRatio="xMidYMid meet">`;
     const selectedHour = new Date(selPt.time).getHours() % 12 || 12;
@@ -234,7 +234,7 @@
     }
     svg += `</svg>`;
 
-    const risk = getRisk(selPt.uvi);
+    const risk = getUVRiskLevel(selPt.uvi);
     const timeToBurnMin = calcSafeTime(selPt.uvi, userSettings.skinType);
     let burnHtml = "";
     if (selPt.uvi > 2) {
@@ -242,7 +242,7 @@
     }
     const center = `
       <div class="center-info">
-        <div class="time">${formatTime(selPt.time)}</div>
+        <div class="time">${formatTimeString(selPt.time)}</div>
         <div class="uvi" style="color:${risk.color}">${selPt.uvi.toFixed(1)}</div>
         <div class="label">${risk.label}</div>
         ${burnHtml}
