@@ -193,13 +193,6 @@
     const selPt = findClosest(selectedTime);
 
     let svg = `<svg viewBox="0 0 100 100" preserveAspectRatio="xMidYMid meet">`;
-    // DEBUG: draw segment boundaries
-    for (let i = 0; i < 12; i++) {
-      const dbgAngle = (i * 30 - 90) * Math.PI/180;
-      const xD = 50 + Math.cos(dbgAngle) * 45;
-      const yD = 50 + Math.sin(dbgAngle) * 45;
-      svg += `<path d="M50 50 L${xD.toFixed(2)} ${yD.toFixed(2)}" stroke="#aaa" stroke-width="0.5" stroke-dasharray="2,2"/>`;
-    }
     const selectedHour = new Date(selPt.time).getHours() % 12 || 12;
     for (let hr = 1; hr <= 12; hr++) {
       const pt = pts.find(p => (new Date(p.time).getHours() % 12 || 12) === hr);
@@ -230,15 +223,6 @@
       const dy = ev.clientY - cy;
       let clickAngle = Math.atan2(dx, -dy) * (180 / Math.PI);
       if (clickAngle < 0) clickAngle += 360;
-      // DEBUG: drop a red dot where you clicked
-      const visSvg = circleEl.querySelector('svg');
-      // clear old debug dot
-      visSvg.querySelectorAll('.debug-click').forEach(n => n.remove());
-      // compute marker position on circle
-      let markerAngle = (clickAngle - 90) * Math.PI/180;
-      let mX = 50 + Math.cos(markerAngle)*42;
-      let mY = 50 + Math.sin(markerAngle)*42;
-      visSvg.innerHTML += `<circle class="debug-click" cx="${mX.toFixed(2)}" cy="${mY.toFixed(2)}" r="2" fill="red"/>`;
 
       // determine clicked segment (each 30° slice from top)
       const seg = Math.floor((clickAngle) / 30) % 12;
