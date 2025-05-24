@@ -2,7 +2,7 @@
 
 ## 1. Project Setup
 - [x] Create a `public_html/js/components/` (or similar) directory
-- [ ] Change `<script src="js/main.js">` in `index.html` to `<script type="module" src="js/main.js">`
+- [x] Change `<script src="js/main.js">` in `index.html` to `<script type="module" src="js/main.js">`
 
 ## 2. Root Application Shell
 - [ ] Create `<sun-safe-app>`
