@@ -197,6 +197,17 @@
           if (tu.toDateString() === tm.toDateString()) dayLabel = "tomorrow";
         }
         label = `Safe until ${hrs}:${mins} ${ampm}` + (dayLabel ? ` ${dayLabel}` : "");
+      } else {
+        const tomorrowHigh = (uvDataCache.forecast || [])
+          .filter(p => new Date(p.time) > new Date() && p.uvi > 2)
+          .sort((a, b) => new Date(a.time) - new Date(b.time));
+        if (tomorrowHigh.length) {
+          const tu2 = new Date(tomorrowHigh[0].time);
+          const hrs2 = tu2.getHours() % 12 || 12;
+          const mins2 = formatTwoDigit(tu2.getMinutes());
+          const ampm2 = tu2.getHours() >= 12 ? "PM" : "AM";
+          label = `Safe until ${hrs2}:${mins2} ${ampm2} tomorrow`;
+        }
       }
       safeTimeElement.textContent = label;
       safeTimeElement.style.color = "var(--info-color)";
