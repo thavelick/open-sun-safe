@@ -89,6 +89,8 @@
       ...(uvDataCache.forecast||[])
     ].sort((a,b)=> new Date(a.time) - new Date(b.time));
   }
+
+  // ai!: spell out all variable names in this function
   function findClosestDataPointByTime(tp) {
     const dataPoints = getAllUVDataPoints();
     const tgt = new Date(tp).getTime();
@@ -233,7 +235,7 @@
       svg += `<path d="M${x1.toFixed(2)} ${y1.toFixed(2)} A45 45 0 0 1 ${x2.toFixed(2)} ${y2.toFixed(2)}" stroke="${riskColor}" stroke-width="${pt && pt.time === selectedDataPoint.time ? 12 : 8}" fill="none"/>`;
     }
     svg += `</svg>`;
-
+    console.log("selecteddataPoint: ", selectedDataPoint);
     const risk = getUVRiskLevel(selectedDataPoint.uvi);
     const timeToBurnMin = calculateSafeExposureTime(selectedDataPoint.uvi, userSettings.skinType);
     let burnHtml = "";
