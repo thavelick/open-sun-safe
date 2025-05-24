@@ -81,6 +81,8 @@
       month:"short", day:"numeric", hour:"2-digit", minute:"2-digit"
     });
   }
+
+  // ai!: make this function return only 12 hours. The first hour should be 7 am on the current day, whether that's the current hour, in the future or in the past
   function getAllUVDataPoints() {
     if (!uvDataCache) return [];
     return [
@@ -89,8 +91,6 @@
       ...(uvDataCache.forecast||[])
     ].sort((a,b)=> new Date(a.time) - new Date(b.time));
   }
-
-  // ai!: this function only looks at hour, which means sometimes it returns the datapoint for the next or previous day by mistake
   function findClosestDataPointByTime(timestamp) {
     const dataPoints = getAllUVDataPoints();
     const targetTime = new Date(timestamp).getTime();
