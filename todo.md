@@ -3,7 +3,6 @@
 ## 1. Project Setup
 - [ ] Create a `public_html/js/components/` (or similar) directory
 - [ ] Change `<script src="js/main.js">` in `index.html` to `<script type="module" src="js/main.js">`
-- [ ] Install any build/tooling if needed (e.g. Rollup, Vite, or just use native ES modules)
 
 ## 2. Root Application Shell
 - [ ] Create `<sun-safe-app>`
