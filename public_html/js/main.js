@@ -90,16 +90,19 @@
     ].sort((a,b)=> new Date(a.time) - new Date(b.time));
   }
 
-  // ai!: spell out all variable names in this function
-  function findClosestDataPointByTime(tp) {
+  function findClosestDataPointByTime(timestamp) {
     const dataPoints = getAllUVDataPoints();
-    const tgt = new Date(tp).getTime();
-    let best = dataPoints[0], minDiff = Math.abs(new Date(dataPoints[0].time).getTime()-tgt);
-    for(let i=1;i<dataPoints.length;i++){
-      const d = Math.abs(new Date(dataPoints[i].time).getTime()-tgt);
-      if (d<minDiff){ minDiff=d; best=dataPoints[i]; }
+    const targetTime = new Date(timestamp).getTime();
+    let bestDataPoint = dataPoints[0];
+    let minimumTimeDifference = Math.abs(new Date(dataPoints[0].time).getTime() - targetTime);
+    for (let index = 1; index < dataPoints.length; index++) {
+      const currentDifference = Math.abs(new Date(dataPoints[index].time).getTime() - targetTime);
+      if (currentDifference < minimumTimeDifference) {
+        minimumTimeDifference = currentDifference;
+        bestDataPoint = dataPoints[index];
+      }
     }
-    return best;
+    return bestDataPoint;
   }
   function getUVRiskLevel(uvIndex) {
     if (uvIndex < 1) return { label: "No UV", color: "#1E90FF" };
