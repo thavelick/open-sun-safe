@@ -82,8 +82,7 @@
     });
   }
 
-  // ai!: update this so if it's after 6PM today, it returns data for *tomorrow* instead. Update the docstring and comment throughout to explain what we're doing
-  // Return UV data points within the 12-hour period starting at 7 AM today,
+  // Return UV data points within the 12-hour period starting at 7 AM today (or tomorrow if current time is after 6 PM),
   // sorted chronologically
   function getAllUVDataPoints() {
     if (!uvDataCache) return [];
@@ -92,7 +91,11 @@
       uvDataCache.now,
       ...(uvDataCache.forecast||[])
     ].sort((a, b) => new Date(a.time) - new Date(b.time));
-    const start = new Date();
+    let start = new Date();
+    // if current time is after 6 PM, start from 7 AM tomorrow
+    if (start.getHours() >= 18) {
+      start.setDate(start.getDate() + 1);
+    }
     start.setHours(7, 0, 0, 0);
     const end = new Date(start.getTime() + 12 * 3600 * 1000);
     return allPoints.filter(p => {
