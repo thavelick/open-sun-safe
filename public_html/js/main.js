@@ -82,14 +82,20 @@
     });
   }
 
-  // ai!: make this function return only 12 hours. The first hour should be 7 am on the current day, whether that's the current hour, in the future or in the past
   function getAllUVDataPoints() {
     if (!uvDataCache) return [];
-    return [
+    const allPoints = [
       ...(uvDataCache.history||[]),
       uvDataCache.now,
       ...(uvDataCache.forecast||[])
-    ].sort((a,b)=> new Date(a.time) - new Date(b.time));
+    ].sort((a, b) => new Date(a.time) - new Date(b.time));
+    const start = new Date();
+    start.setHours(7, 0, 0, 0);
+    const end = new Date(start.getTime() + 12 * 3600 * 1000);
+    return allPoints.filter(p => {
+      const t = new Date(p.time);
+      return t >= start && t < end;
+    });
   }
   function findClosestDataPointByTime(timestamp) {
     const dataPoints = getAllUVDataPoints();
