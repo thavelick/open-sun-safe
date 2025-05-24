@@ -82,7 +82,7 @@
     });
   }
 
-  // ai!: add a commment explaining what this function is doing
+  // Return UV data points within the 12-hour period starting at 7 AM today, sorted chronologically
   function getAllUVDataPoints() {
     if (!uvDataCache) return [];
     const allPoints = [
