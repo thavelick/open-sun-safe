@@ -90,6 +90,7 @@
     ].sort((a,b)=> new Date(a.time) - new Date(b.time));
   }
 
+  // ai!: this function only looks at hour, which means sometimes it returns the datapoint for the next or previous day by mistake
   function findClosestDataPointByTime(timestamp) {
     const dataPoints = getAllUVDataPoints();
     const targetTime = new Date(timestamp).getTime();
