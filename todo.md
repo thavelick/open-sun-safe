@@ -1,7 +1,7 @@
 # TODO: Web Components Refactor
 
 ## 1. Project Setup
-- [ ] Create a `public_html/js/components/` (or similar) directory
+- [x] Create a `public_html/js/components/` (or similar) directory
 - [ ] Change `<script src="js/main.js">` in `index.html` to `<script type="module" src="js/main.js">`
 
 ## 2. Root Application Shell
