@@ -82,6 +82,7 @@
     });
   }
 
+  // ai!: add a commment explaining what this function is doing
   function getAllUVDataPoints() {
     if (!uvDataCache) return [];
     const allPoints = [
