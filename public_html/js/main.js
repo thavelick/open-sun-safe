@@ -82,7 +82,9 @@
     });
   }
 
-  // Return UV data points within the 12-hour period starting at 7 AM today, sorted chronologically
+  // ai!: update this so if it's after 6PM today, it returns data for *tomorrow* instead. Update the docstring and comment throughout to explain what we're doing
+  // Return UV data points within the 12-hour period starting at 7 AM today,
+  // sorted chronologically
   function getAllUVDataPoints() {
     if (!uvDataCache) return [];
     const allPoints = [
