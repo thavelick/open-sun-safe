@@ -82,8 +82,8 @@
     });
   }
 
-  // Return UV data points within the 12-hour period starting at 7 AM today (or tomorrow if current time is after 6 PM),
-  // sorted chronologically
+  // Return UV data points within the 12-hour period starting at 7 AM today (or tomorrow
+  // if current time is after 6 PM), sorted chronologically
   function getAllUVDataPoints() {
     if (!uvDataCache) return [];
     const allPoints = [
