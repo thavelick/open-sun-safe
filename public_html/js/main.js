@@ -1,5 +1,6 @@
 import './components/loading-indicator.js';
 import './components/message-box.js';
+import './components/app-card.js';
 ;(function(){
   // ===== CONSTANTS =====
   const SETTINGS_STORAGE_KEY = "sunSafetySettings";
