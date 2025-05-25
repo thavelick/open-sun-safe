@@ -7,7 +7,7 @@ template.innerHTML = `
     @keyframes spin { 0%{transform:rotate(0)}100%{transform:rotate(360deg)} }
   </style>
   <div class="loading-spinner"></div>
-  <slot>Loading UV data…</slot>
+  Loading UV data…
 `;
 class LoadingIndicator extends HTMLElement {
   static get observedAttributes() { return ['visible']; }
