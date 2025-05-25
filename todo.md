@@ -4,38 +4,18 @@
 - [x] Create a `public_html/js/components/` (or similar) directory
 - [x] Change `<script src="js/main.js">` in `index.html` to `<script type="module" src="js/main.js">`
 
-## 2. Root Application Shell
-- [ ] Create `<sun-safe-app>`
-  - Manage global state (settings, UV cache, selected segment)
-  - Handle routing/tabs and orchestrate child components
-  - Persist to `localStorage` and kick off data fetch
-
-## 3. Navigation Components
-- [ ] `<tab-navigation>`
-  - Renders two `<tab-button>`s (“Home” / “Settings”)
-  - Dispatches a `tab-change` event
-- [ ] `<tab-button>`
-  - Accepts attributes like `label`, `selected`
-
-## 4. View Containers
-- [ ] `<home-view>`
-  - Contains `<loading-indicator>`, `<message-box>`, `<uv-circle-widget>`, `<safe-time-card>`, `<location-panel>`
-  - Listens for data/state events to re-render
-- [ ] `<settings-view>`
-  - Contains `<settings-form>` and `<about-section>`
-
-## 5. Feedback & Placeholders
+## 2. Feedback & Placeholders
 - [ ] `<loading-indicator>`
 - [ ] `<message-box>`
 
-## 6. Cards & Panels
+## 3. Cards & Panels
 - [ ] `<app-card>`
   - Generic header + content wrapper
-- [ ] `<safe-time-card>` (extends or uses `<app-card>`)
+- [ ] `<safe-time-card>` (extends or uses `<app-card>`)"
 - [ ] `<location-panel>`
 - [ ] `<about-section>`
 
-## 7. UV Visualization
+## 4. UV Visualization
 - [ ] `<uv-circle-widget>`
   - Outer wrapper, renders overall SVG canvas
   - Coordinates clicks and selection state
@@ -44,13 +24,33 @@
 - [ ] `<uv-circle-center>`
   - Inner overlay showing time, UVI, risk label, burn-time
 
-## 8. Settings Form & Controls
+## 5. Navigation Components
+- [ ] `<tab-navigation>`
+  - Renders two `<tab-button>`s (“Home” / “Settings”)
+  - Dispatches a `tab-change` event
+- [ ] `<tab-button>`
+  - Accepts attributes like `label`, `selected`
+
+## 6. View Containers
+- [ ] `<home-view>`
+  - Contains `<loading-indicator>`, `<message-box>`, `<uv-circle-widget>`, `<safe-time-card>`, `<location-panel>`
+  - Listens for data/state events to re-render
+- [ ] `<settings-view>`
+  - Contains `<settings-form>` and `<about-section>`
+
+## 7. Settings Form & Controls
 - [ ] `<settings-form>`
   - Latitude, Longitude, Skin Type fields + Save button
   - Dispatches `settings-saved` with payload
 - [ ] `<form-group>`
   - Label + control wrapper
 - [ ] (Optional) `<app-input>`, `<app-select>`, `<app-button>` for shared styling
+
+## 8. Root Application Shell
+- [ ] Create `<sun-safe-app>`
+  - Manage global state (settings, UV cache, selected segment)
+  - Handle routing/tabs and orchestrate child components
+  - Persist to `localStorage` and kick off data fetch
 
 ## 9. Styling & Themes
 - [ ] Move CSS variables and reset into a shared `<style>` module or inject into each component’s shadow DOM
