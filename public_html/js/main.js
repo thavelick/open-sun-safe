@@ -1,3 +1,5 @@
+import './components/loading-indicator.js';
+import './components/message-box.js';
 ;(function(){
   // ===== CONSTANTS =====
   const SETTINGS_STORAGE_KEY = "sunSafetySettings";
@@ -150,10 +152,10 @@
 
   function displayMessage(html) {
     messageElement.innerHTML = html;
-    messageElement.style.display = "block";
+    messageElement.setAttribute('visible','');
   }
   function clearMessage() {
-    messageElement.style.display = "none";
+    messageElement.removeAttribute('visible');
     messageElement.innerHTML = "";
   }
 
@@ -233,12 +235,12 @@
   }
 
   function displayLoadingIndicator() {
-    loadingElement.style.display = "flex";
+    loadingElement.setAttribute('visible','');
     homeContentElement.style.display = "none";
     clearMessage();
   }
   function hideLoadingIndicator() {
-    loadingElement.style.display = "none";
+    loadingElement.removeAttribute('visible');
   }
 
   function renderUVCircleWidget() {

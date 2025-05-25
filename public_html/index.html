@@ -21,13 +21,10 @@
 
   <!-- HOME VIEW -->
   <div id="view-home" class="view active">
-    <div id="loading" class="loading-container" style="display:none">
-      <div class="loading-spinner"></div>
-      <div>Loading UV data…</div>
-    </div>
+    <loading-indicator id="loading"></loading-indicator>
 
     <!-- message when no settings or no data -->
-    <div id="message" style="width:100%;"></div>
+    <message-box id="message"></message-box>
 
     <!-- main home content -->
     <div id="home-content" style="display:none">

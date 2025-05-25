@@ -5,8 +5,8 @@
 - [x] Change `<script src="js/main.js">` in `index.html` to `<script type="module" src="js/main.js">`
 
 ## 2. Feedback & Placeholders
-- [ ] `<loading-indicator>`
-- [ ] `<message-box>`
+- [x] `<loading-indicator>`
+- [x] `<message-box>`
 
 ## 3. Cards & Panels
 - [ ] `<app-card>`
