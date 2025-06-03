@@ -58,7 +58,7 @@
       }
     }, (err) => {
       console.warn("geolocation error", err);
-      alert("Could not get your location");
+      alert("Unable to determine your location, please specify it directly");
       if (btn) {
         btn.disabled = false;
         btn.textContent = "📍 Detect Location";
