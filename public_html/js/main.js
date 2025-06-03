@@ -32,6 +32,36 @@
   const inputLatitudeElement = document.getElementById("inp-lat");
   const inputLongitudeElement = document.getElementById("inp-lng");
   const inputSkinTypeElement = document.getElementById("inp-skin");
+  const detectLocationBtn = document.getElementById("btn-detect-location");
+  if (detectLocationBtn) {
+    detectLocationBtn.addEventListener("click", () => {
+      if (!navigator.geolocation) {
+        return alert("Geolocation is not supported by your browser");
+      }
+      detectLocationBtn.disabled = true;
+      detectLocationBtn.textContent = "Detecting…";
+
+      navigator.geolocation.getCurrentPosition((pos) => {
+        const lat = pos.coords.latitude.toFixed(4);
+        const lng = pos.coords.longitude.toFixed(4);
+
+        inputLatitudeElement.value = lat;
+        inputLongitudeElement.value = lng;
+
+        userSettings.latitude = lat;
+        userSettings.longitude = lng;
+        saveSettings();
+
+        detectLocationBtn.disabled = false;
+        detectLocationBtn.textContent = "📍 Detect Location";
+      }, (err) => {
+        console.warn("geolocation error", err);
+        alert("Could not get your location");
+        detectLocationBtn.disabled = false;
+        detectLocationBtn.textContent = "📍 Detect Location";
+      });
+    });
+  }
 
   // ===== UTILITIES =====
   function saveSettings() {
