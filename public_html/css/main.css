@@ -183,23 +183,11 @@ input, select {
   font-size: 1rem;
 }
 
-.location-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 1rem;
-}
-
-.location-header h3 {
-  margin: 0;
-  font-size: 1rem;
-  font-weight: 600;
-  color: var(--dark-color);
-}
-
 #btn-detect-location {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
   font-size: 0.9rem;
   padding: 6px 12px;
   white-space: nowrap;
-  flex-shrink: 0;
 }
