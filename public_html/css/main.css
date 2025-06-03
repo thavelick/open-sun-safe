@@ -165,3 +165,34 @@ input, select {
   #location-refresh { flex-direction:column; gap:10px; }
   button { width:100%; }
 }
+
+/* ========== Location fieldset (in main.css) ========== */
+.location-frame {
+  position: relative;
+  border: 1px solid #ddd;
+  border-radius: var(--border-radius);
+  padding: 1rem;
+  margin-bottom: 1rem;
+}
+
+.location-frame legend {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  /* pull it out so it doesn’t overlap the border */
+  padding: 0 0.5rem;
+  margin-left: 1rem;
+  margin-right: 1rem;
+  /* match your background */
+  background: #f9f9f9;
+  font-weight: 600;
+  font-size: 1rem;
+}
+
+.location-frame legend button {
+  /* tighten up the button a bit */
+  font-size: 0.9rem;
+  padding: 6px 12px;
+  white-space: nowrap;
+  margin: 0;     /* override any user-agent margins */
+}
