@@ -32,34 +32,43 @@
   const inputLatitudeElement = document.getElementById("inp-lat");
   const inputLongitudeElement = document.getElementById("inp-lng");
   const inputSkinTypeElement = document.getElementById("inp-skin");
+
+  function fetchLocation(btn) {
+    if (!navigator.geolocation) {
+      return alert("Geolocation is not supported by your browser");
+    }
+    if (btn) {
+      btn.disabled = true;
+      btn.textContent = "Detecting…";
+    }
+    navigator.geolocation.getCurrentPosition((pos) => {
+      const lat = pos.coords.latitude.toFixed(4);
+      const lng = pos.coords.longitude.toFixed(4);
+
+      inputLatitudeElement.value = lat;
+      inputLongitudeElement.value = lng;
+
+      userSettings.latitude = lat;
+      userSettings.longitude = lng;
+      saveSettings();
+
+      if (btn) {
+        btn.disabled = false;
+        btn.textContent = "📍 Detect Location";
+      }
+    }, (err) => {
+      console.warn("geolocation error", err);
+      alert("Could not get your location");
+      if (btn) {
+        btn.disabled = false;
+        btn.textContent = "📍 Detect Location";
+      }
+    });
+  }
   const detectLocationBtn = document.getElementById("btn-detect-location");
   if (detectLocationBtn) {
     detectLocationBtn.addEventListener("click", () => {
-      if (!navigator.geolocation) {
-        return alert("Geolocation is not supported by your browser");
-      }
-      detectLocationBtn.disabled = true;
-      detectLocationBtn.textContent = "Detecting…";
-
-      navigator.geolocation.getCurrentPosition((pos) => {
-        const lat = pos.coords.latitude.toFixed(4);
-        const lng = pos.coords.longitude.toFixed(4);
-
-        inputLatitudeElement.value = lat;
-        inputLongitudeElement.value = lng;
-
-        userSettings.latitude = lat;
-        userSettings.longitude = lng;
-        saveSettings();
-
-        detectLocationBtn.disabled = false;
-        detectLocationBtn.textContent = "📍 Detect Location";
-      }, (err) => {
-        console.warn("geolocation error", err);
-        alert("Could not get your location");
-        detectLocationBtn.disabled = false;
-        detectLocationBtn.textContent = "📍 Detect Location";
-      });
+      fetchLocation(detectLocationBtn);
     });
   }
 
@@ -348,15 +357,7 @@
   function initializeApp(){
     loadSettings();
     if (!userSettings.latitude && navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(pos => {
-        userSettings.latitude = pos.coords.latitude.toFixed(4);
-        userSettings.longitude = pos.coords.longitude.toFixed(4);
-        saveSettings();
-        inputLatitudeElement.value = userSettings.latitude;
-        inputLongitudeElement.value = userSettings.longitude;
-      }, err => {
-        console.warn("Geolocation error:", err);
-      });
+      fetchLocation();
     }
     inputLatitudeElement.value = userSettings.latitude;
     inputLongitudeElement.value = userSettings.longitude;
