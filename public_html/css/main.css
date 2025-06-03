@@ -183,10 +183,12 @@ input, select {
   font-size: 1rem;
 }
 
+.location-button-container {
+  text-align: right;
+  margin-bottom: 1rem;
+}
+
 #btn-detect-location {
-  position: absolute;
-  top: 1rem;
-  right: 1rem;
   font-size: 0.9rem;
   padding: 6px 12px;
   white-space: nowrap;
