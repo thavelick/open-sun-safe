@@ -176,23 +176,30 @@ input, select {
 }
 
 .location-frame legend {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  /* pull it out so it doesn’t overlap the border */
   padding: 0 0.5rem;
   margin-left: 1rem;
-  margin-right: 1rem;
-  /* match your background */
   background: #f9f9f9;
   font-weight: 600;
   font-size: 1rem;
 }
 
-.location-frame legend button {
-  /* tighten up the button a bit */
+.location-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+}
+
+.location-header h3 {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--dark-color);
+}
+
+#btn-detect-location {
   font-size: 0.9rem;
   padding: 6px 12px;
   white-space: nowrap;
-  margin: 0;     /* override any user-agent margins */
+  flex-shrink: 0;
 }
