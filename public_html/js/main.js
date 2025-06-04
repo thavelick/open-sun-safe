@@ -30,7 +30,7 @@
   const locationInfoElement = document.getElementById("location-info");
   const refreshButton = document.getElementById("refresh-btn");
   const inputCityElement     = document.getElementById("inp-city");
-  const cityListElement      = document.getElementById("city-list");
+  const citySuggestionsElement      = document.getElementById("city-suggestions");
 
   const settingsForm = document.getElementById("settings-form");
   const inputLatitudeElement = document.getElementById("inp-lat");
@@ -82,17 +82,30 @@
       const response = await fetch(CITY_PRESETS_URL);
       if (!response.ok) throw new Error("HTTP " + response.status);
       cityPresets = await response.json();
-      Object.keys(cityPresets).forEach(city => {
-        const opt = document.createElement("option");
-        opt.value = city;
-        cityListElement.appendChild(opt);
-      });
+      // City presets loaded for mobile autocomplete
     } catch (err) {
       console.error("Failed to load city presets", err);
     }
   }
-  // update lat/lng when a city is selected
-  if (inputCityElement) {
+  // update lat/lng when a city is selected with mobile-friendly autocomplete
+  if (inputCityElement && citySuggestionsElement) {
+    inputCityElement.addEventListener("input", () => {
+      const val = inputCityElement.value.toLowerCase();
+      const suggestions = Object.keys(cityPresets).filter(city => city.toLowerCase().includes(val)).slice(0, 10);
+      citySuggestionsElement.innerHTML = suggestions.map(city => `<div class="suggestion-item">${city}</div>`).join("");
+    });
+    citySuggestionsElement.addEventListener("click", (e) => {
+      if (e.target.classList.contains("suggestion-item")) {
+        const city = e.target.textContent;
+        inputCityElement.value = city;
+        const event = new Event("change", { bubbles: true });
+        inputCityElement.dispatchEvent(event);
+        citySuggestionsElement.innerHTML = "";
+      }
+    });
+    inputCityElement.addEventListener("blur", () => {
+      setTimeout(() => { citySuggestionsElement.innerHTML = ""; }, 100);
+    });
     inputCityElement.addEventListener("change", () => {
       const city = inputCityElement.value;
       if (cityPresets[city]) {
