@@ -160,6 +160,15 @@ input, select {
 #about ul { margin-top:8px; margin-left:20px; }
 #about li { margin-bottom:4px; }
 
+.card-content ul {
+  margin-top: 8px;
+  margin-left: 20px;
+}
+
+.card-content li {
+  margin-bottom: 4px;
+}
+
 /* ========== RESPONSIVE ========== */
 @media (max-width:600px){
   #location-refresh { flex-direction:column; gap:10px; }
