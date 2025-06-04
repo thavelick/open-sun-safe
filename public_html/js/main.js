@@ -3,13 +3,15 @@
   const SETTINGS_STORAGE_KEY = "sunSafetySettings";
   const UV_DATA_STORAGE_KEY   = "sunSafetyUvData";
   const UV_DATA_EXPIRY_MS       = 30*60*1000; // ms (30 minutes)
+  const CITY_PRESETS_URL        = "data/city_lat_long.json";
+  let cityPresets               = {};
   const MINIMUM_ERYTHEMA_DOSE_VALUES = {
     "1":200, "2":250, "3":300,
     "4":450, "5":600, "6":1000
   };
 
   // ===== STATE =====
-  let userSettings = { latitude:"", longitude:"", skinType:"1" };
+  let userSettings = { latitude:"", longitude:"", skinType:"1", city:"" };
   let uvDataCache   = null;
   let lastFetchTimestamp   = null;
   let selectedSegmentTimestamp = null;
@@ -27,6 +29,8 @@
   const skinTypeDisplayElement = document.getElementById("skin-display");
   const locationInfoElement = document.getElementById("location-info");
   const refreshButton = document.getElementById("refresh-btn");
+  const inputCityElement     = document.getElementById("inp-city");
+  const cityListElement      = document.getElementById("city-list");
 
   const settingsForm = document.getElementById("settings-form");
   const inputLatitudeElement = document.getElementById("inp-lat");
@@ -69,6 +73,37 @@
   if (detectLocationBtn) {
     detectLocationBtn.addEventListener("click", () => {
       fetchLocation(detectLocationBtn);
+    });
+  }
+
+  // ===== CITY PRESETS =====
+  async function loadCityPresets() {
+    try {
+      const response = await fetch(CITY_PRESETS_URL);
+      if (!response.ok) throw new Error("HTTP " + response.status);
+      cityPresets = await response.json();
+      Object.keys(cityPresets).forEach(city => {
+        const opt = document.createElement("option");
+        opt.value = city;
+        cityListElement.appendChild(opt);
+      });
+    } catch (err) {
+      console.error("Failed to load city presets", err);
+    }
+  }
+  // update lat/lng when a city is selected
+  if (inputCityElement) {
+    inputCityElement.addEventListener("change", () => {
+      const city = inputCityElement.value;
+      if (cityPresets[city]) {
+        const coords = cityPresets[city];
+        inputLatitudeElement.value = coords.latitude;
+        inputLongitudeElement.value = coords.longitude;
+        userSettings.latitude = coords.latitude.toString();
+        userSettings.longitude = coords.longitude.toString();
+        userSettings.city = city;
+        saveSettings();
+      }
     });
   }
 
@@ -356,6 +391,10 @@
 
   function initializeApp(){
     loadSettings();
+    loadCityPresets();
+    if (userSettings.city && inputCityElement) {
+      inputCityElement.value = userSettings.city;
+    }
     if (!userSettings.latitude && navigator.geolocation) {
       fetchLocation();
     }
@@ -371,6 +410,7 @@
       userSettings.latitude  = inputLatitudeElement.value.trim();
       userSettings.longitude = inputLongitudeElement.value.trim();
       userSettings.skinType  = inputSkinTypeElement.value;
+      userSettings.city      = inputCityElement.value.trim();
       saveSettings();
       fetchUVData(true);
       switchTabView("home");
