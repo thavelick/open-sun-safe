@@ -31,6 +31,7 @@
   const refreshButton = document.getElementById("refresh-btn");
   const inputCityElement     = document.getElementById("inp-city");
   const citySuggestionsElement      = document.getElementById("city-suggestions");
+  let previousCityInputValue;
 
   const settingsForm = document.getElementById("settings-form");
   const inputLatitudeElement = document.getElementById("inp-lat");
@@ -55,6 +56,7 @@
       userSettings.latitude = lat;
       userSettings.longitude = lng;
       saveSettings();
+      showSettingsSavedNotification();
 
       if (btn) {
         btn.disabled = false;
@@ -96,6 +98,11 @@
     });
     citySuggestionsElement.addEventListener("click", (e) => {
       if (e.target.classList.contains("suggestion-item")) {
+        e.preventDefault();
+      }
+    });
+    citySuggestionsElement.addEventListener("mousedown", (e) => {
+      if (e.target.classList.contains("suggestion-item")) {
         const city = e.target.textContent;
         inputCityElement.value = city;
         const event = new Event("change", { bubbles: true });
@@ -103,8 +110,16 @@
         citySuggestionsElement.innerHTML = "";
       }
     });
+    inputCityElement.addEventListener("focus", () => {
+      previousCityInputValue = inputCityElement.value;
+    });
     inputCityElement.addEventListener("blur", () => {
-      setTimeout(() => { citySuggestionsElement.innerHTML = ""; }, 100);
+      setTimeout(() => {
+        citySuggestionsElement.innerHTML = "";
+        if (!cityPresets[inputCityElement.value]) {
+          inputCityElement.value = previousCityInputValue;
+        }
+      }, 0);
     });
     inputCityElement.addEventListener("change", () => {
       const city = inputCityElement.value;
@@ -116,6 +131,7 @@
         userSettings.longitude = coords.longitude.toString();
         userSettings.city = city;
         saveSettings();
+        showSettingsSavedNotification();
       }
     });
   }
@@ -123,6 +139,19 @@
   // ===== UTILITIES =====
   function saveSettings() {
     localStorage.setItem(SETTINGS_STORAGE_KEY, JSON.stringify(userSettings));
+  }
+  // Show a brief notification in settings view when preferences are saved
+  function showSettingsSavedNotification() {
+    let n = document.getElementById("save-notification");
+    if (!n) {
+      n = document.createElement("div");
+      n.id = "save-notification";
+      n.style.cssText = "opacity:0;transition:opacity .3s;margin-bottom:10px;color:var(--success-color);";
+      settingsForm.parentNode.insertBefore(n, settingsForm);
+    }
+    n.textContent = "Settings saved";
+    n.style.opacity = "1";
+    setTimeout(() => { n.style.opacity = "0"; }, 2000);
   }
   function loadSettings() {
     const storedSettings = localStorage.getItem(SETTINGS_STORAGE_KEY);
@@ -338,7 +367,6 @@
       svg += `<path d="M${x1.toFixed(2)} ${y1.toFixed(2)} A45 45 0 0 1 ${x2.toFixed(2)} ${y2.toFixed(2)}" stroke="${riskColor}" stroke-width="${pt && pt.time === selectedDataPoint.time ? 12 : 8}" fill="none"/>`;
     }
     svg += `</svg>`;
-    console.log("selecteddataPoint: ", selectedDataPoint);
     const risk = getUVRiskLevel(selectedDataPoint.uvi);
     const timeToBurnMin = calculateSafeExposureTime(selectedDataPoint.uvi, userSettings.skinType);
     let burnHtml = "";
@@ -415,19 +443,28 @@
     inputLongitudeElement.value = userSettings.longitude;
     inputSkinTypeElement.value = userSettings.skinType;
 
+    // Auto-save preferences when manual settings change
+    inputLatitudeElement.addEventListener("change", () => {
+      userSettings.latitude = inputLatitudeElement.value.trim();
+      saveSettings();
+      showSettingsSavedNotification();
+    });
+    inputLongitudeElement.addEventListener("change", () => {
+      userSettings.longitude = inputLongitudeElement.value.trim();
+      saveSettings();
+      showSettingsSavedNotification();
+    });
+    inputSkinTypeElement.addEventListener("change", () => {
+      userSettings.skinType = inputSkinTypeElement.value;
+      saveSettings();
+      showSettingsSavedNotification();
+    });
+
     tabHomeButton.onclick     = ()=>switchTabView("home");
     tabSettingsButton.onclick = ()=>switchTabView("settings");
 
-    settingsForm.onsubmit = e=>{
-      e.preventDefault();
-      userSettings.latitude  = inputLatitudeElement.value.trim();
-      userSettings.longitude = inputLongitudeElement.value.trim();
-      userSettings.skinType  = inputSkinTypeElement.value;
-      userSettings.city      = inputCityElement.value.trim();
-      saveSettings();
-      fetchUVData(true);
-      switchTabView("home");
-    };
+    // Prevent form submission; settings are saved automatically on change
+    settingsForm.onsubmit = e => e.preventDefault();
 
     refreshButton.onclick = ()=>fetchUVData(true);
 
