@@ -358,8 +358,9 @@
     skinTypeDisplayElement.textContent = skinMap[userSettings.skinType] || "";
 
     let txt = `Location: ${userSettings.latitude}, ${userSettings.longitude}`;
-    if (lastFetchTimestamp)
+    if (lastFetchTimestamp) {
       txt += `<br>Last: ${formatDateString(lastFetchTimestamp)}`;
+    }
     locationInfoElement.innerHTML = txt;
 
     renderUVCircleWidget();
