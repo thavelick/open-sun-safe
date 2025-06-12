@@ -188,7 +188,7 @@
   function formatTimeString(timeString) {
     const d = new Date(timeString);
     let hour12 = d.getHours();
-    let ampm = hour12>=12?"PM":"AM";
+    const ampm = hour12>=12?"PM":"AM";
     hour12 = hour12%12||12;
     return hour12 + ":" + formatTwoDigit(d.getMinutes()) + " " + ampm;
   }
@@ -207,7 +207,7 @@
       uvDataCache.now,
       ...(uvDataCache.forecast||[])
     ].sort((a, b) => new Date(a.time) - new Date(b.time));
-    let start = new Date();
+    const start = new Date();
     // if current time is after 6 PM, start from 7 AM tomorrow
     if (start.getHours() >= 18) {
       start.setDate(start.getDate() + 1);
@@ -354,7 +354,6 @@
     const selectedDataPoint = findClosestDataPointByTime(selectedSegmentTimestamp);
 
     let svg = `<svg viewBox="0 0 100 100" preserveAspectRatio="xMidYMid meet">`;
-    const selectedHour = new Date(selectedDataPoint.time).getHours() % 12 || 12;
     for (let hr = 1; hr <= 12; hr++) {
       const pt = dataPoints.find(p => (new Date(p.time).getHours() % 12 || 12) === hr);
       const riskColor = getUVRiskLevel(pt ? pt.uvi : 0).color;
