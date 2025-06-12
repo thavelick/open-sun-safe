@@ -1,24 +1,28 @@
-;(function(){
+(function () {
   // ===== CONSTANTS =====
   const SETTINGS_STORAGE_KEY = "sunSafetySettings";
-  const UV_DATA_STORAGE_KEY   = "sunSafetyUvData";
-  const UV_DATA_EXPIRY_MS       = 30*60*1000; // ms (30 minutes)
-  const CITY_PRESETS_URL        = "data/city_lat_long.json";
-  let cityPresets               = {};
+  const UV_DATA_STORAGE_KEY = "sunSafetyUvData";
+  const UV_DATA_EXPIRY_MS = 30 * 60 * 1000; // ms (30 minutes)
+  const CITY_PRESETS_URL = "data/city_lat_long.json";
+  let cityPresets = {};
   const MINIMUM_ERYTHEMA_DOSE_VALUES = {
-    "1":200, "2":250, "3":300,
-    "4":450, "5":600, "6":1000
+    1: 200,
+    2: 250,
+    3: 300,
+    4: 450,
+    5: 600,
+    6: 1000,
   };
 
   // ===== STATE =====
-  let userSettings = { latitude:"", longitude:"", skinType:"1", city:"" };
-  let uvDataCache   = null;
-  let lastFetchTimestamp   = null;
+  let userSettings = { latitude: "", longitude: "", skinType: "1", city: "" };
+  let uvDataCache = null;
+  let lastFetchTimestamp = null;
   let selectedSegmentTimestamp = null;
 
   // ===== DOM REFS =====
-  const tabHomeButton       = document.getElementById("tab-home");
-  const tabSettingsButton   = document.getElementById("tab-settings");
+  const tabHomeButton = document.getElementById("tab-home");
+  const tabSettingsButton = document.getElementById("tab-settings");
   const homeViewElement = document.getElementById("view-home");
   const settingsViewElement = document.getElementById("view-settings");
   const loadingElement = document.getElementById("loading");
@@ -29,8 +33,8 @@
   const skinTypeDisplayElement = document.getElementById("skin-display");
   const locationInfoElement = document.getElementById("location-info");
   const refreshButton = document.getElementById("refresh-btn");
-  const inputCityElement     = document.getElementById("inp-city");
-  const citySuggestionsElement      = document.getElementById("city-suggestions");
+  const inputCityElement = document.getElementById("inp-city");
+  const citySuggestionsElement = document.getElementById("city-suggestions");
   let previousCityInputValue;
 
   const settingsForm = document.getElementById("settings-form");
@@ -46,30 +50,33 @@
       btn.disabled = true;
       btn.textContent = "Detecting…";
     }
-    navigator.geolocation.getCurrentPosition((pos) => {
-      const lat = pos.coords.latitude.toFixed(4);
-      const lng = pos.coords.longitude.toFixed(4);
+    navigator.geolocation.getCurrentPosition(
+      (pos) => {
+        const lat = pos.coords.latitude.toFixed(4);
+        const lng = pos.coords.longitude.toFixed(4);
 
-      inputLatitudeElement.value = lat;
-      inputLongitudeElement.value = lng;
+        inputLatitudeElement.value = lat;
+        inputLongitudeElement.value = lng;
 
-      userSettings.latitude = lat;
-      userSettings.longitude = lng;
-      saveSettings();
-      showSettingsSavedNotification();
+        userSettings.latitude = lat;
+        userSettings.longitude = lng;
+        saveSettings();
+        showSettingsSavedNotification();
 
-      if (btn) {
-        btn.disabled = false;
-        btn.textContent = "📍 Detect Location";
-      }
-    }, (err) => {
-      console.warn("geolocation error", err);
-      alert("Unable to determine your location, please specify it directly");
-      if (btn) {
-        btn.disabled = false;
-        btn.textContent = "📍 Detect Location";
-      }
-    });
+        if (btn) {
+          btn.disabled = false;
+          btn.textContent = "📍 Detect Location";
+        }
+      },
+      (err) => {
+        console.warn("geolocation error", err);
+        alert("Unable to determine your location, please specify it directly");
+        if (btn) {
+          btn.disabled = false;
+          btn.textContent = "📍 Detect Location";
+        }
+      },
+    );
   }
   const detectLocationBtn = document.getElementById("btn-detect-location");
   if (detectLocationBtn) {
@@ -93,8 +100,12 @@
   if (inputCityElement && citySuggestionsElement) {
     inputCityElement.addEventListener("input", () => {
       const val = inputCityElement.value.toLowerCase();
-      const suggestions = Object.keys(cityPresets).filter(city => city.toLowerCase().includes(val)).slice(0, 10);
-      citySuggestionsElement.innerHTML = suggestions.map(city => `<div class="suggestion-item">${city}</div>`).join("");
+      const suggestions = Object.keys(cityPresets)
+        .filter((city) => city.toLowerCase().includes(val))
+        .slice(0, 10);
+      citySuggestionsElement.innerHTML = suggestions
+        .map((city) => `<div class="suggestion-item">${city}</div>`)
+        .join("");
     });
     citySuggestionsElement.addEventListener("click", (e) => {
       if (e.target.classList.contains("suggestion-item")) {
@@ -146,26 +157,31 @@
     if (!n) {
       n = document.createElement("div");
       n.id = "save-notification";
-      n.style.cssText = "opacity:0;transition:opacity .3s;margin-bottom:10px;color:var(--success-color);";
+      n.style.cssText =
+        "opacity:0;transition:opacity .3s;margin-bottom:10px;color:var(--success-color);";
       settingsForm.parentNode.insertBefore(n, settingsForm);
     }
     n.textContent = "Settings saved";
     n.style.opacity = "1";
-    setTimeout(() => { n.style.opacity = "0"; }, 2000);
+    setTimeout(() => {
+      n.style.opacity = "0";
+    }, 2000);
   }
   function loadSettings() {
     const storedSettings = localStorage.getItem(SETTINGS_STORAGE_KEY);
     if (storedSettings) {
       try {
         userSettings = JSON.parse(storedSettings);
-      } catch(_){}
+      } catch (_) {}
     }
   }
   function isSettingsReady() {
-    return userSettings.latitude && userSettings.longitude && userSettings.skinType;
+    return (
+      userSettings.latitude && userSettings.longitude && userSettings.skinType
+    );
   }
   function saveUvStorage(data) {
-    const payload = { data, ts:Date.now() };
+    const payload = { data, ts: Date.now() };
     localStorage.setItem(UV_DATA_STORAGE_KEY, JSON.stringify(payload));
     lastFetchTimestamp = new Date(payload.ts);
   }
@@ -179,22 +195,25 @@
         lastFetchTimestamp = new Date(ts);
         return true;
       }
-    } catch(_){}
+    } catch (_) {}
     return false;
   }
-  function formatTwoDigit(num){
-    return (num<10? "0"+num : num);
+  function formatTwoDigit(num) {
+    return num < 10 ? "0" + num : num;
   }
   function formatTimeString(timeString) {
     const d = new Date(timeString);
     let hour12 = d.getHours();
-    const ampm = hour12>=12?"PM":"AM";
-    hour12 = hour12%12||12;
+    const ampm = hour12 >= 12 ? "PM" : "AM";
+    hour12 = hour12 % 12 || 12;
     return hour12 + ":" + formatTwoDigit(d.getMinutes()) + " " + ampm;
   }
   function formatDateString(dateObject) {
     return dateObject.toLocaleString([], {
-      month:"short", day:"numeric", hour:"2-digit", minute:"2-digit"
+      month: "short",
+      day: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
     });
   }
 
@@ -203,9 +222,9 @@
   function getAllUVDataPoints() {
     if (!uvDataCache) return [];
     const allPoints = [
-      ...(uvDataCache.history||[]),
+      ...(uvDataCache.history || []),
       uvDataCache.now,
-      ...(uvDataCache.forecast||[])
+      ...(uvDataCache.forecast || []),
     ].sort((a, b) => new Date(a.time) - new Date(b.time));
     const start = new Date();
     // if current time is after 6 PM, start from 7 AM tomorrow
@@ -214,7 +233,7 @@
     }
     start.setHours(7, 0, 0, 0);
     const end = new Date(start.getTime() + 12 * 3600 * 1000);
-    return allPoints.filter(p => {
+    return allPoints.filter((p) => {
       const t = new Date(p.time);
       return t >= start && t < end;
     });
@@ -223,9 +242,13 @@
     const dataPoints = getAllUVDataPoints();
     const targetTime = new Date(timestamp).getTime();
     let bestDataPoint = dataPoints[0];
-    let minimumTimeDifference = Math.abs(new Date(dataPoints[0].time).getTime() - targetTime);
+    let minimumTimeDifference = Math.abs(
+      new Date(dataPoints[0].time).getTime() - targetTime,
+    );
     for (let index = 1; index < dataPoints.length; index++) {
-      const currentDifference = Math.abs(new Date(dataPoints[index].time).getTime() - targetTime);
+      const currentDifference = Math.abs(
+        new Date(dataPoints[index].time).getTime() - targetTime,
+      );
       if (currentDifference < minimumTimeDifference) {
         minimumTimeDifference = currentDifference;
         bestDataPoint = dataPoints[index];
@@ -251,7 +274,7 @@
 
   // ===== UI UPDATES =====
   function switchTabView(tab) {
-    if (tab==="home") {
+    if (tab === "home") {
       tabHomeButton.classList.add("active");
       tabSettingsButton.classList.remove("active");
       homeViewElement.classList.add("active");
@@ -284,7 +307,7 @@
             <button id="btn-fetch">Fetch UV Data</button>
           </div>
         </div>`);
-      document.getElementById("btn-fetch").onclick = ()=>fetchUVData(true);
+      document.getElementById("btn-fetch").onclick = () => fetchUVData(true);
       return;
     }
     clearMessage();
@@ -295,9 +318,11 @@
     if (uvi <= 2) {
       const now = new Date(uvDataCache.now.time);
       const future = getAllUVDataPoints()
-        .filter(p => new Date(p.time) > now && p.uvi > 2)
+        .filter((p) => new Date(p.time) > now && p.uvi > 2)
         .sort((a, b) => new Date(a.time) - new Date(b.time));
-      let label = Math.round(calculateSafeExposureTime(uvi, userSettings.skinType)) + " min";
+      let label =
+        Math.round(calculateSafeExposureTime(uvi, userSettings.skinType)) +
+        " min";
       if (future.length) {
         const tu = new Date(future[0].time);
         const hrs = tu.getHours() % 12 || 12;
@@ -312,7 +337,9 @@
           tm.setDate(today.getDate() + 1);
           if (tu.toDateString() === tm.toDateString()) dayLabel = "tomorrow";
         }
-        label = `Safe until ${hrs}:${mins} ${ampm}` + (dayLabel ? ` ${dayLabel}` : "");
+        label =
+          `Safe until ${hrs}:${mins} ${ampm}` +
+          (dayLabel ? ` ${dayLabel}` : "");
       }
       safeTimeElement.textContent = label;
       safeTimeElement.style.color = "var(--info-color)";
@@ -321,17 +348,18 @@
       safeTimeElement.style.color = "var(--primary-color)";
     }
     const skinMap = {
-      "1":"Type I (Very fair)",
-      "2":"Type II (Fair)",
-      "3":"Type III (Medium)",
-      "4":"Type IV (Olive)",
-      "5":"Type V (Brown)",
-      "6":"Type VI (Dark)"
+      1: "Type I (Very fair)",
+      2: "Type II (Fair)",
+      3: "Type III (Medium)",
+      4: "Type IV (Olive)",
+      5: "Type V (Brown)",
+      6: "Type VI (Dark)",
     };
-    skinTypeDisplayElement.textContent = skinMap[userSettings.skinType]||"";
+    skinTypeDisplayElement.textContent = skinMap[userSettings.skinType] || "";
 
     let txt = `Location: ${userSettings.latitude}, ${userSettings.longitude}`;
-    if (lastFetchTimestamp) txt += `<br>Last: ${formatDateString(lastFetchTimestamp)}`;
+    if (lastFetchTimestamp)
+      txt += `<br>Last: ${formatDateString(lastFetchTimestamp)}`;
     locationInfoElement.innerHTML = txt;
 
     renderUVCircleWidget();
@@ -350,15 +378,19 @@
     const dataPoints = getAllUVDataPoints();
     if (!dataPoints.length) return;
     const currentTimestamp = uvDataCache.now.time;
-    selectedSegmentTimestamp = selectedSegmentTimestamp||currentTimestamp;
-    const selectedDataPoint = findClosestDataPointByTime(selectedSegmentTimestamp);
+    selectedSegmentTimestamp = selectedSegmentTimestamp || currentTimestamp;
+    const selectedDataPoint = findClosestDataPointByTime(
+      selectedSegmentTimestamp,
+    );
 
     let svg = `<svg viewBox="0 0 100 100" preserveAspectRatio="xMidYMid meet">`;
     for (let hr = 1; hr <= 12; hr++) {
-      const pt = dataPoints.find(p => (new Date(p.time).getHours() % 12 || 12) === hr);
+      const pt = dataPoints.find(
+        (p) => (new Date(p.time).getHours() % 12 || 12) === hr,
+      );
       const riskColor = getUVRiskLevel(pt ? pt.uvi : 0).color;
-      const startAngle = (hr * 30 - 90) * Math.PI/180;
-      const endAngle = ((hr % 12 + 1) * 30 - 90) * Math.PI/180;
+      const startAngle = ((hr * 30 - 90) * Math.PI) / 180;
+      const endAngle = ((((hr % 12) + 1) * 30 - 90) * Math.PI) / 180;
       const x1 = 50 + Math.cos(startAngle) * 45;
       const y1 = 50 + Math.sin(startAngle) * 45;
       const x2 = 50 + Math.cos(endAngle) * 45;
@@ -367,7 +399,10 @@
     }
     svg += `</svg>`;
     const risk = getUVRiskLevel(selectedDataPoint.uvi);
-    const timeToBurnMin = calculateSafeExposureTime(selectedDataPoint.uvi, userSettings.skinType);
+    const timeToBurnMin = calculateSafeExposureTime(
+      selectedDataPoint.uvi,
+      userSettings.skinType,
+    );
     let burnHtml = "";
     if (selectedDataPoint.uvi > 2) {
       burnHtml = `<div class="burn-time">Burn in ${timeToBurnMin}m</div>`;
@@ -390,10 +425,12 @@
       if (clickAngle < 0) clickAngle += 360;
 
       // determine clicked segment (each 30° slice from top)
-      const seg = Math.floor((clickAngle) / 30) % 12;
+      const seg = Math.floor(clickAngle / 30) % 12;
       const hr = seg === 0 ? 12 : seg;
       // find a data point matching that hour
-      const ptMatch = dataPoints.find(pt => (new Date(pt.time).getHours() % 12 || 12) === hr);
+      const ptMatch = dataPoints.find(
+        (pt) => (new Date(pt.time).getHours() % 12 || 12) === hr,
+      );
       if (ptMatch) {
         selectedSegmentTimestamp = ptMatch.time;
         renderUVCircleWidget();
@@ -401,25 +438,25 @@
     };
   }
 
-  async function fetchUVData(force=false){
-    if (!isSettingsReady()){
-      switchTabView("settings"); return;
+  async function fetchUVData(force = false) {
+    if (!isSettingsReady()) {
+      switchTabView("settings");
+      return;
     }
     displayLoadingIndicator();
-    if (!force && loadUvStorage()){
+    if (!force && loadUvStorage()) {
       renderHomeView();
       return;
     }
     try {
       const url = `https://currentuvindex.com/api/v1/uvi?latitude=${userSettings.latitude}&longitude=${userSettings.longitude}`;
       const response = await fetch(url);
-      if(!response.ok) throw new Error("HTTP "+response.status);
+      if (!response.ok) throw new Error("HTTP " + response.status);
       const data = await response.json();
       uvDataCache = data;
       saveUvStorage(data);
       renderHomeView();
-    }
-    catch(err){
+    } catch (err) {
       hideLoadingIndicator();
       displayMessage(`<div style="padding:24px; text-align:center">
         <p>Error loading UV data. Try again later.</p>
@@ -429,7 +466,7 @@
     }
   }
 
-  function initializeApp(){
+  function initializeApp() {
     loadSettings();
     loadCityPresets();
     if (userSettings.city && inputCityElement) {
@@ -459,18 +496,18 @@
       showSettingsSavedNotification();
     });
 
-    tabHomeButton.onclick     = ()=>switchTabView("home");
-    tabSettingsButton.onclick = ()=>switchTabView("settings");
+    tabHomeButton.onclick = () => switchTabView("home");
+    tabSettingsButton.onclick = () => switchTabView("settings");
 
     // Prevent form submission; settings are saved automatically on change
-    settingsForm.onsubmit = e => e.preventDefault();
+    settingsForm.onsubmit = (e) => e.preventDefault();
 
-    refreshButton.onclick = ()=>fetchUVData(true);
+    refreshButton.onclick = () => fetchUVData(true);
 
     fetchUVData(false);
   }
 
   window.switchTabView = switchTabView;
-  window.fetchUVData   = fetchUVData;
+  window.fetchUVData = fetchUVData;
   document.addEventListener("DOMContentLoaded", initializeApp);
 })();

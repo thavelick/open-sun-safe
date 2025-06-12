@@ -1,131 +1,178 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>OpenSunSafe</title>
-  <link rel="stylesheet" href="css/main.css" />
-</head>
-<body>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>OpenSunSafe</title>
+    <link rel="stylesheet" href="css/main.css" />
+  </head>
+  <body>
+    <div class="container">
+      <header>
+        <h1>☀️ OpenSunSafe</h1>
+      </header>
 
-<div class="container">
-  <header>
-    <h1>☀️ OpenSunSafe</h1>
-  </header>
+      <!-- TABS -->
+      <div class="tabs">
+        <button id="tab-home" class="tab-button active">Home</button>
+        <button id="tab-settings" class="tab-button">Settings</button>
+      </div>
 
-  <!-- TABS -->
-  <div class="tabs">
-    <button id="tab-home" class="tab-button active">Home</button>
-    <button id="tab-settings" class="tab-button">Settings</button>
-  </div>
+      <!-- HOME VIEW -->
+      <div id="view-home" class="view active">
+        <div id="loading" class="loading-container" style="display: none">
+          <div class="loading-spinner"></div>
+          <div>Loading UV data…</div>
+        </div>
 
-  <!-- HOME VIEW -->
-  <div id="view-home" class="view active">
-    <div id="loading" class="loading-container" style="display:none">
-      <div class="loading-spinner"></div>
-      <div>Loading UV data…</div>
-    </div>
+        <!-- message when no settings or no data -->
+        <div id="message" style="width: 100%"></div>
 
-    <!-- message when no settings or no data -->
-    <div id="message" style="width:100%;"></div>
+        <!-- main home content -->
+        <div id="home-content" style="display: none">
+          <div id="circle-widget"></div>
 
-    <!-- main home content -->
-    <div id="home-content" style="display:none">
-      <div id="circle-widget"></div>
+          <div id="safe-time-card" class="card">
+            <div class="card-header"><h2>Safe Sun Exposure</h2></div>
+            <div class="card-content">
+              <div id="safe-time">0 min</div>
+              <div style="margin-top: 6px; font-size: 0.9rem">
+                Based on skin type:
+                <span id="skin-display" style="font-weight: 600"></span>
+              </div>
+            </div>
+          </div>
 
-      <div id="safe-time-card" class="card">
-        <div class="card-header"><h2>Safe Sun Exposure</h2></div>
-        <div class="card-content">
-          <div id="safe-time">0 min</div>
-          <div style="margin-top:6px; font-size:.9rem;">
-            Based on skin type: <span id="skin-display" style="font-weight:600;"></span>
+          <div id="location-refresh">
+            <div id="location-info"></div>
+            <button id="refresh-btn" class="secondary">Refresh</button>
+          </div>
+          <div
+            class="disclaimer"
+            style="font-size: 0.8rem; color: #666; margin-top: 8px"
+          >
+            <em
+              >Estimates are approximate and should not be taken as medical
+              advice.</em
+            >
           </div>
         </div>
       </div>
 
-      <div id="location-refresh">
-        <div id="location-info"></div>
-        <button id="refresh-btn" class="secondary">Refresh</button>
-      </div>
-      <div class="disclaimer" style="font-size:0.8rem;color:#666;margin-top:8px;">
-        <em>Estimates are approximate and should not be taken as medical advice.</em>
-      </div>
-    </div>
-  </div>
+      <!-- SETTINGS VIEW -->
+      <div id="view-settings" class="view">
+        <div class="card">
+          <div class="card-header"><h2>Settings</h2></div>
+          <div class="card-content">
+            <form id="settings-form">
+              <fieldset class="location-frame">
+                <legend>Location</legend>
+                <div class="form-group" style="position: relative">
+                  <label for="inp-city">City</label>
+                  <input
+                    id="inp-city"
+                    placeholder="Search city"
+                    autocomplete="off"
+                  />
+                  <div id="city-suggestions" class="suggestions"></div>
+                </div>
+                <div class="form-group">
+                  <label for="inp-lat">Latitude</label>
+                  <input id="inp-lat" type="number" step="0.0001" required />
+                </div>
+                <div class="form-group">
+                  <label for="inp-lng">Longitude</label>
+                  <input id="inp-lng" type="number" step="0.0001" required />
+                </div>
+                <div class="location-button-container">
+                  <button
+                    type="button"
+                    id="btn-detect-location"
+                    class="secondary"
+                  >
+                    📍 Detect Location
+                  </button>
+                </div>
+              </fieldset>
+              <div class="form-group">
+                <label for="inp-skin">Fitzpatrick Skin Type</label>
+                <select id="inp-skin" required>
+                  <option value="">Select…</option>
+                  <option value="1">Type I – Very fair, always burns</option>
+                  <option value="2">Type II – Fair, burns easily</option>
+                  <option value="3">Type III – Medium, burns moderately</option>
+                  <option value="4">Type IV – Olive, burns minimally</option>
+                  <option value="5">Type V – Brown, rarely burns</option>
+                  <option value="6">
+                    Type VI – Dark brown/black, never burns
+                  </option>
+                </select>
+              </div>
+            </form>
+          </div>
+        </div>
 
-  <!-- SETTINGS VIEW -->
-  <div id="view-settings" class="view">
-    <div class="card">
-      <div class="card-header"><h2>Settings</h2></div>
-      <div class="card-content">
-        <form id="settings-form">
-          <fieldset class="location-frame">
-            <legend>Location</legend>
-                        <div class="form-group" style="position:relative;">
-                          <label for="inp-city">City</label>
-                          <input id="inp-city" placeholder="Search city" autocomplete="off" />
-                          <div id="city-suggestions" class="suggestions"></div>
-                        </div>
-            <div class="form-group">
-            <label for="inp-lat">Latitude</label>
-            <input id="inp-lat" type="number" step="0.0001" required />
+        <div id="about" class="card">
+          <div class="card-header"><h2>About the Fitzpatrick Scale</h2></div>
+          <div class="card-content">
+            <p>
+              The Fitzpatrick scale classifies skin types based on how they
+              respond to sun exposure:
+            </p>
+            <ul>
+              <li>
+                <strong>Type I:</strong> Very fair skin, always burns, never
+                tans
+              </li>
+              <li>
+                <strong>Type II:</strong> Fair skin, burns easily, tans
+                minimally
+              </li>
+              <li>
+                <strong>Type III:</strong> Medium skin, burns moderately, tans
+                gradually
+              </li>
+              <li>
+                <strong>Type IV:</strong> Olive skin, burns minimally, tans well
+              </li>
+              <li>
+                <strong>Type V:</strong> Brown skin, rarely burns, tans darkly
+              </li>
+              <li>
+                <strong>Type VI:</strong> Dark brown/black skin, never burns
+              </li>
+            </ul>
           </div>
-          <div class="form-group">
-            <label for="inp-lng">Longitude</label>
-            <input id="inp-lng" type="number" step="0.0001" required />
+        </div>
+        <div class="card">
+          <div class="card-header"><h2>Data Sources</h2></div>
+          <div class="card-content">
+            <ul>
+              <li>
+                <a href="https://currentuvindex.com/api">CurrentUVIndex API</a>
+              </li>
+              <li>
+                <a href="https://simplemaps.com/data/us-cities"
+                  >US Cities data</a
+                >
+              </li>
+            </ul>
           </div>
-          <div class="location-button-container">
-            <button type="button" id="btn-detect-location" class="secondary">📍 Detect Location</button>
+        </div>
+        <div class="card">
+          <div class="card-header"><h2>Source Code</h2></div>
+          <div class="card-content">
+            <p>
+              <a href="https://github.com/thavelick/open-sun-safe"
+                >open-sun-safe GitHub</a
+              >
+            </p>
           </div>
-          </fieldset>
-          <div class="form-group">
-            <label for="inp-skin">Fitzpatrick Skin Type</label>
-            <select id="inp-skin" required>
-              <option value="">Select…</option>
-              <option value="1">Type I – Very fair, always burns</option>
-              <option value="2">Type II – Fair, burns easily</option>
-              <option value="3">Type III – Medium, burns moderately</option>
-              <option value="4">Type IV – Olive, burns minimally</option>
-              <option value="5">Type V – Brown, rarely burns</option>
-              <option value="6">Type VI – Dark brown/black, never burns</option>
-            </select>
-          </div>
-        </form>
+        </div>
       </div>
     </div>
+    <!-- /container -->
 
-    <div id="about" class="card">
-      <div class="card-header"><h2>About the Fitzpatrick Scale</h2></div>
-      <div class="card-content">
-        <p>The Fitzpatrick scale classifies skin types based on how they respond to sun exposure:</p>
-        <ul>
-          <li><strong>Type I:</strong> Very fair skin, always burns, never tans</li>
-          <li><strong>Type II:</strong> Fair skin, burns easily, tans minimally</li>
-          <li><strong>Type III:</strong> Medium skin, burns moderately, tans gradually</li>
-          <li><strong>Type IV:</strong> Olive skin, burns minimally, tans well</li>
-          <li><strong>Type V:</strong> Brown skin, rarely burns, tans darkly</li>
-          <li><strong>Type VI:</strong> Dark brown/black skin, never burns</li>
-        </ul>
-      </div>
-    </div>
-    <div class="card">
-      <div class="card-header"><h2>Data Sources</h2></div>
-      <div class="card-content">
-        <ul>
-          <li><a href="https://currentuvindex.com/api">CurrentUVIndex API</a></li>
-          <li><a href="https://simplemaps.com/data/us-cities">US Cities data</a></li>
-        </ul>
-      </div>
-    </div>
-    <div class="card">
-      <div class="card-header"><h2>Source Code</h2></div>
-      <div class="card-content">
-        <p><a href="https://github.com/thavelick/open-sun-safe">open-sun-safe GitHub</a></p>
-      </div>
-    </div>
-  </div>
-</div><!-- /container -->
-
-<script src="js/main.js"></script>
-</body>
+    <script src="js/main.js"></script>
+  </body>
 </html>
